@@ -1,0 +1,30 @@
+---
+title: Degree Roadmap
+subtitle: An Interactive eLearning Strategy
+lang: en-US
+geometry: margin=1in
+indent: true
+numbersections: true
+fontfamily: qbookman
+toc: true
+date: September 9, 2020
+keywords: [Education, Writing, Computer Science]
+subject: Education
+category: Education
+description: |
+    This is a description
+bibliography: references.lib
+abstract: |
+    I the first paragraph of a YAML abstract.
+
+    I am the second paragraph.
+header-includes: |
+    \usepackage{authblk}
+    \author[1]{Romero A. Jorin Ryms \thanks{nothing@gmail.com}}
+    \affil[1]{University of Somewhere}
+output:
+    papaja::Degree Roadmap.pdf:
+        citation_package: biblatex
+zotero: # calls zotero, must be currently running
+    csl-style: apa
+---

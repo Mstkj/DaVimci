@@ -3,7 +3,7 @@
 function Main() {
 clear
 PS3="Enter input format:~$ "
-options0=(Docx PDF Markdown LaTeX HTML5)
+options=(Docx PDF Markdown LaTeX HTML5)
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
@@ -64,22 +64,22 @@ select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
 		echo -e "Input set  $REPLY is ${options[0]}.\n"
-		out="${options0[0]}" && REPLY="Docx"; PdfEngine
+		out="${options[0]}" && REPLY="Docx"; PdfEngine
 	elif [[ "$REPLY" = "2" ]]; then # PDF
 		echo -e "Option $REPLY is ${options[1]}.\n"
-		out="${options0[1]}" && REPLY="PDF"; PdfEngine
+		out="${options[1]}" && REPLY="PDF"; PdfEngine
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
 		printf "\nOutput set to %s${options[2]}.\n\n"
-		out="${options0[2]}" && REPLY="Markdown"; PdfEngine
+		out="${options[2]}" && REPLY="Markdown"; PdfEngine
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
 		echo -e "Option $REPLY is ${options[3]}.\n"
-		out="${options0[3]}" && REPLY="LaTeX"; PdfEngine
+		out="${options[3]}" && REPLY="LaTeX"; PdfEngine
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
 		echo -e "Option $REPLY is ${options[4]}.\n"
-		out="${options0[4]}" && REPLY="HTML5"; PdfEngine
+		out="${options[4]}" && REPLY="HTML5"; PdfEngine
 	elif [[ "$REPLY" = "6" ]]; then # ePub
 		echo -e "Option $REPLY is ${options[5]}.\n"
-		out="${options0[5]}" && REPLY="ePub"; PdfEngine
+		out="${options[5]}" && REPLY="ePub"; PdfEngine
 	else
 		clear ; echo -e "invalid option.\n"; SearchOutput
 	fi

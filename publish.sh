@@ -4,23 +4,23 @@ function Main() {
 clear
 PS3="Enter input format:~$ "
 options0=(Docx PDF Markdown LaTeX HTML5)
-select menu in "${options0[@]}"
+select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
-		echo -e "Input set  $REPLY is ${options0[0]}.\n"
-		inp="${options0[0]}" && REPLY="Docx"; SearchInput
+		echo -e "Input set  $REPLY is ${options[0]}.\n"
+		inp="${options[0]}" && REPLY="Docx"; SearchInput
 	elif [[ "$REPLY" = "2" ]]; then # PDF
-		echo -e "option $REPLY is ${options0[1]}.\n"
-		inp="${options0[1]}" && REPLY="PDF"; SearchInput
+		echo -e "option $REPLY is ${options[1]}.\n"
+		inp="${options[1]}" && REPLY="PDF"; SearchInput
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
-		printf "\nInput set to %s${options0[2]}.\n\n"
-		inp="${options0[2]}" && REPLY="Markdown"; SearchInput
+		printf "\nInput set to %s${options[2]}.\n\n"
+		inp="${options[2]}" && REPLY="Markdown"; SearchInput
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
-		echo -e "option $REPLY is ${options0[3]}.\n"
-		inp="${options0[3]}" && REPLY="LaTeX"; SearchInput
+		echo -e "option $REPLY is ${options[3]}.\n"
+		inp="${options[3]}" && REPLY="LaTeX"; SearchInput
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
-		echo -e "option $REPLY is ${options0[4]}.\n"
-		inp="${options0[4]}" && REPLY="HTML5"; SearchInput
+		echo -e "option $REPLY is ${options[4]}.\n"
+		inp="${options[4]}" && REPLY="HTML5"; SearchInput
 	else
 		clear ; echo -e "invalid option.\n"; Main
 	fi
@@ -63,25 +63,25 @@ options=(Docx PDF Markdown LaTeX HTML5 ePub)
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
-		echo -e "Input set  $REPLY is ${options0[0]}.\n"
+		echo -e "Input set  $REPLY is ${options[0]}.\n"
 		out="${options0[0]}" && REPLY="Docx"; PdfEngine
 	elif [[ "$REPLY" = "2" ]]; then # PDF
-		echo -e "Option $REPLY is ${options0[1]}.\n"
+		echo -e "Option $REPLY is ${options[1]}.\n"
 		out="${options0[1]}" && REPLY="PDF"; PdfEngine
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
-		printf "\nOutput set to %s${options0[2]}.\n\n"
+		printf "\nOutput set to %s${options[2]}.\n\n"
 		out="${options0[2]}" && REPLY="Markdown"; PdfEngine
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
-		echo -e "Option $REPLY is ${options0[3]}.\n"
+		echo -e "Option $REPLY is ${options[3]}.\n"
 		out="${options0[3]}" && REPLY="LaTeX"; PdfEngine
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
-		echo -e "Option $REPLY is ${options0[4]}.\n"
+		echo -e "Option $REPLY is ${options[4]}.\n"
 		out="${options0[4]}" && REPLY="HTML5"; PdfEngine
 	elif [[ "$REPLY" = "6" ]]; then # ePub
-		echo -e "Option $REPLY is ${options0[5]}.\n"
+		echo -e "Option $REPLY is ${options[5]}.\n"
 		out="${options0[5]}" && REPLY="ePub"; PdfEngine
 	else
-		clear ; echo -e "invalid option.\n"
+		clear ; echo -e "invalid option.\n"; SearchOutput
 	fi
 done
 # TODO: If output LaTeX, publish to Tex or PDF? <16-02-21, melthsked> #
@@ -94,11 +94,11 @@ options=(wkhtmltopdf xelatex)
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
-		echo -e "Input set $REPLY is ${options0[0]}.\n"
-		engine="--pdf-engine=${options0[0]}" && REPLY="Docx"; SelectTemplate
+		echo -e "Input set $REPLY is ${options[0]}.\n"
+		engine="--pdf-engine=${options[0]}" && REPLY="Docx"; SelectTemplate
 	elif [[ "$REPLY" = "2" ]]; then # PDF
-		echo -e "option $REPLY is ${options0[1]}.\n"
-		engine="--pdf-engine=${options0[1]}" && REPLY="PDF"; SelectTemplate
+		echo -e "option $REPLY is ${options[1]}.\n"
+		engine="--pdf-engine=${options[1]}" && REPLY="PDF"; SelectTemplate
 	else
 		clear ; echo -e "invalid option.\n"
 	fi

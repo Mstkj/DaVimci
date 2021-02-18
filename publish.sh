@@ -33,6 +33,7 @@ done
 function SearchInput() { # Function for rudimentary search engine
 while true
 do
+	printf "\nType filename (case sensitive).\n"
 	read -rp "File Name:~$ " inp
 	printf "\nShowing results containing \"%s$inp\":\n"
 	read -rp "Set extension:~$ " ext
@@ -41,8 +42,7 @@ do
 	printf "\nType name [Y]? Press [N] to restart search."; read -rp " [Y/n] " res
 	case "$res" in
 		[yY][eE][sS]|[yY])
-			printf "\nType filename (case sensitive).\n\n"
-			read -rp "File Name:~$ " inp
+			#read -rp "File Name:~$ " inp
 			OUTPUT="$inp.$ext"
 			printf "\nInput file \"%s$inp.%s$ext\" ($REPLY) awaits output settings.\n\n"
 			SearchOutput

@@ -39,7 +39,7 @@ do
 	#printf "\n.%s$ext\n"
 	printf "Showing results containing \"%s$inp.%s$ext\":\n"
 	com="$(find . "$PWD" -maxdepth 1 -type f -print -iname "$inp" | grep ".$ext" | head -15)"; printf "\n%s$com\n"
-	printf "\nPress [Y] for continue or [N] to search:~$ "; read -rp "[Y/n] " res
+	printf "\nPress [Y] to continue or [N] to search:~$ "; read -rp "" res
 	case "$res" in
 		[yY][eE][sS]|[yY])
 			#read -rp "File Name:~$ " inp
@@ -89,28 +89,26 @@ done
 }
 
 function PdfEngine() {
-printf "%s${options[0]} will accept HTML/CSS syntax\n %s${options[1]} will accept LaTeX.\n"
 PS5="Enter PDF Format:~$ "
 options=(wkhtmltopdf xelatex)
+printf "%s${options[0]} will accept HTML/CSS syntax\n%s${options[1]} will accept LaTeX.\n"
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
-		echo -e "Input set $REPLY is ${options[0]}.\n"
-		engine="--pdf-engine=${options[0]}" && REPLY="Docx"; SelectTemplate
+		echo -e "Input set $REPLY is ${options[0]}.\n"; engine="--pdf-engine=${options[0]}"; SelectTemplate
 	elif [[ "$REPLY" = "2" ]]; then # PDF
-		echo -e "option $REPLY is ${options[1]}.\n"
-		engine="--pdf-engine=${options[1]}" && REPLY="PDF"; SelectTemplate
+		echo -e "option $REPLY is ${options[1]}.\n"; engine="--pdf-engine=${options[1]}"; SelectTemplate
 	else
-		clear ; echo -e "invalid option.\n"
+		clear ; echo -e "invalid option.\n"; PdfEngine
 	fi
 done
 }
 
 function SelectTemplate() {
-printf "\nPress [Y] to use template and [N] to continue without:~$ "; read -rp "[Y/n] " res
+printf "Press [Y] to use template and [N] to continue without:~$ "; read -rp "" res
 case "$res" in
 	[yY][eE][sS]|[yY])
-		# TODO: Menu for choosing template <16-02-21, melthsked> #
+		# TODO: Why does this always loop back to SearchOutput?? <16-02-21, melthsked> #
 		PS6="Select Template:~$ "
 		options=(Tex HTML)
 		select menu in "${opptions[@]}"
@@ -119,6 +117,8 @@ case "$res" in
 				printf "Input set to %s${options[0]}.\n"; template="--template=${options[0]}"; Defaults
 			elif [[ "$REPLY" = "2" ]]; then # template.html
 				printf "Input set to %s${options[1]}.\n"; template="--template=${options[1]}"; Defaults
+			else
+				printf "Invalid option.\n"; SelectTemplate
 			fi
 		done
 		;;

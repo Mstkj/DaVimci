@@ -31,14 +31,13 @@ done
 # TODO: The above function should be moved to 'function MainMenu()' <16-02-21, melthsked> #
 
 function SearchInput() { # Function for rudimentary search engine
-read -rp "Set extension:~$ " ext
-printf "\n.%s$ext\n\n"
 while true
 do
 	read -rp "File Name:~$ " inp
 	printf "\nShowing results containing \"%s$inp\":\n"
-	com="$(find . "$PWD" -maxdepth 1 -type f -print -iname "$inp" | grep ".$ext" | head -15)"
-	printf "\n%s$com\n"
+	read -rp "Set extension:~$ " ext
+	printf "\n.%s$ext\n\n"
+	com="$(find . "$PWD" -maxdepth 1 -type f -print -iname "$inp" | grep ".$ext" | head -15)"; printf "\n%s$com\n"
 	printf "\nType name [Y]? Press [N] to restart search."; read -rp " [Y/n] " res
 	case "$res" in
 		[yY][eE][sS]|[yY])
@@ -106,10 +105,10 @@ done
 }
 
 function SelectTemplate() {
-printf "\nUse template [Y]? Press [N] to continue without one.\n"; read -rp " [Y/n] " res
+printf "\nUse template [Y]? Press [N] to continue without one."; read -rp " [Y/n] " res
 case "$res" in
 	[yY][eE][sS]|[yY])
-		# TODO: Menu for choosing template <16-02-21, yourname> #
+		# TODO: Menu for choosing template <16-02-21, melthsked> #
 		PS6="Select Template:~$ "
 		options=(Tex HTML)
 		select menu in "${opptions[@]}"

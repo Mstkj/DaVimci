@@ -34,10 +34,10 @@ function SearchInput() { # Function for rudimentary search engine
 while true
 do
 	printf "\nType filename (case sensitive).\n"
-	read -rp "File Name:~$ " inp
-	read -rp "Set extension:~$ " ext
-	printf "\n.%s$ext\n"
-	printf "\nShowing results containing \"%s$inp.%s$ext\":\n"
+	read -rp "Search:~$ " inp
+	read -rp "\nSet extension:~$ " ext
+	#printf "\n.%s$ext\n"
+	printf "Showing results containing \"%s$inp.%s$ext\":\n"
 	com="$(find . "$PWD" -maxdepth 1 -type f -print -iname "$inp" | grep ".$ext" | head -15)"; printf "\n%s$com\n"
 	printf "\nType name [Y]? Press [N] to restart search."; read -rp " [Y/n] " res
 	case "$res" in

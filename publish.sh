@@ -90,7 +90,7 @@ done
 function PdfEngine() {
 PS5="Enter PDF Format:~$ "
 options=(wkhtmltopdf xelatex)
-printf "%s${options[0]} will accept HTML/CSS syntax\n%s${options[1]} will accept LaTeX.\n"
+printf "%s${options[0]} will accept HTML/CSS syntax.\n%s${options[1]} will accept LaTeX.\n"
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
@@ -110,7 +110,7 @@ case "$res" in
 		# TODO: Why does this always loop back to SearchOutput?? <16-02-21, melthsked> #
 		PS6="Select Template:~$ "
 		options=(Tex HTML)
-		select menu in "${opptions[@]}"
+		select menu in "${options[@]}"
 		do
 			if [[ "$REPLY" = "1" ]]; then # template.tex
 				printf "Input set to %s${options[0]}.\n"; template="--template=${options[0]}"; Defaults

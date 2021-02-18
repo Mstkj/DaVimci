@@ -113,9 +113,9 @@ case "$res" in
 		select menu in "${options[@]}"
 		do
 			if [[ "$REPLY" = "1" ]]; then # template.tex
-				printf "Input set to %s${options[0]}.\n"; template="--template=${options[0]}"; Defaults
+				printf "%s${options[0]}.\n"; template="--template=${options[0]}"; Defaults
 			elif [[ "$REPLY" = "2" ]]; then # template.html
-				printf "Input set to %s${options[1]}.\n"; template="--template=${options[1]}"; Defaults
+				printf "%s${options[1]}.\n"; template="--template=${options[1]}"; Defaults
 			else
 				printf "Invalid option.\n"; SelectTemplate
 			fi
@@ -172,7 +172,7 @@ esac
 }
 
 function Class() {
-	class="document-class=article": PandocOutputCommand
+	class="document-class=article"; PandocOutputCommand
 	# TODO: Choose class. Currently, article is only available class. It will be the default. <16-02-21, melthsked> #
 }
 

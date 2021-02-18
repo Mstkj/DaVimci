@@ -7,19 +7,19 @@ options=(Docx PDF Markdown LaTeX HTML5)
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
-		echo -e "Input set  $REPLY is ${options[0]}.\n"
+		echo -e "Input set to $REPLY is ${options[0]}.\n"
 		inp="${options[0]}" && REPLY="Docx"; SearchInput
 	elif [[ "$REPLY" = "2" ]]; then # PDF
-		echo -e "option $REPLY is ${options[1]}.\n"
+		echo -e "Input set to $REPLY is ${options[1]}.\n"
 		inp="${options[1]}" && REPLY="PDF"; SearchInput
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
-		printf "\nInput set to %s${options[2]}.\n\n"
+		printf "\nInput set to %s${options[2]}.\n"
 		inp="${options[2]}" && REPLY="Markdown"; SearchInput
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
-		echo -e "option $REPLY is ${options[3]}.\n"
+		echo -e "Input set to $REPLY is ${options[3]}.\n"
 		inp="${options[3]}" && REPLY="LaTeX"; SearchInput
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
-		echo -e "option $REPLY is ${options[4]}.\n"
+		echo -e "Input set to $REPLY is ${options[4]}.\n"
 		inp="${options[4]}" && REPLY="HTML5"; SearchInput
 	else
 		clear ; echo -e "invalid option.\n"; Main
@@ -35,9 +35,9 @@ while true
 do
 	printf "\nType filename (case sensitive).\n"
 	read -rp "File Name:~$ " inp
-	printf "\nShowing results containing \"%s$inp\":\n"
 	read -rp "Set extension:~$ " ext
-	printf "\n.%s$ext\n\n"
+	printf "\n.%s$ext\n"
+	printf "\nShowing results containing \"%s$inp.%s$ext\":\n"
 	com="$(find . "$PWD" -maxdepth 1 -type f -print -iname "$inp" | grep ".$ext" | head -15)"; printf "\n%s$com\n"
 	printf "\nType name [Y]? Press [N] to restart search."; read -rp " [Y/n] " res
 	case "$res" in

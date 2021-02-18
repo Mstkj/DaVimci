@@ -33,13 +33,13 @@ done
 function SearchInput() { # Function for rudimentary search engine
 while true
 do
-	printf "\nType filename (case sensitive).\n"
+	printf "Type filename (case sensitive).\n\n"
 	read -rp "Search:~$ " inp
-	read -rp "\nSet extension:~$ " ext
+	read -rp "Set extension:~$ " ext
 	#printf "\n.%s$ext\n"
 	printf "Showing results containing \"%s$inp.%s$ext\":\n"
 	com="$(find . "$PWD" -maxdepth 1 -type f -print -iname "$inp" | grep ".$ext" | head -15)"; printf "\n%s$com\n"
-	printf "\nType name [Y]? Press [N] to restart search."; read -rp " [Y/n] " res
+	printf "\nPress [Y] for continue or [N] to search:~$ "; read -rp "[Y/n] " res
 	case "$res" in
 		[yY][eE][sS]|[yY])
 			#read -rp "File Name:~$ " inp
@@ -48,7 +48,7 @@ do
 			SearchOutput
 			;;
 		[nY][oO]|[nN])
-			printf "\nRestarting search\n"; SearchInput
+			SearchInput
 			;;
 			*)
 			printf "\nInvalid response, try again...\n"
@@ -65,12 +65,14 @@ do
 		echo -e "Input set  $REPLY is ${options[0]}.\n"
 		out="${options[0]}" && REPLY="Docx"; PdfEngine
 	elif [[ "$REPLY" = "2" ]]; then # PDF
+		# TODO: Is PDF LaTeX or HTML? <18-02-21, melthsked> #
 		echo -e "Option $REPLY is ${options[1]}.\n"
 		out="${options[1]}" && REPLY="PDF"; PdfEngine
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
 		printf "\nOutput set to %s${options[2]}.\n\n"
 		out="${options[2]}" && REPLY="Markdown"; PdfEngine
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
+		# TODO: we're assuming that  LaTeX is an actual .tex LaTeX document and not a PDF. <18-02-21, melthsked> #
 		echo -e "Option $REPLY is ${options[3]}.\n"
 		out="${options[3]}" && REPLY="LaTeX"; PdfEngine
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
@@ -87,7 +89,7 @@ done
 }
 
 function PdfEngine() {
-printf "%s${options[0]} will accept HTML/CSS syntax\n %s${options[1]} will accept LaTeX.a\n"
+printf "%s${options[0]} will accept HTML/CSS syntax\n %s${options[1]} will accept LaTeX.\n"
 PS5="Enter PDF Format:~$ "
 options=(wkhtmltopdf xelatex)
 select menu in "${options[@]}"
@@ -105,7 +107,7 @@ done
 }
 
 function SelectTemplate() {
-printf "\nUse template [Y]? Press [N] to continue without one."; read -rp " [Y/n] " res
+printf "\nPress [Y] to use template and [N] to continue without:~$ "; read -rp "[Y/n] " res
 case "$res" in
 	[yY][eE][sS]|[yY])
 		# TODO: Menu for choosing template <16-02-21, melthsked> #

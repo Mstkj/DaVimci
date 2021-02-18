@@ -27,8 +27,7 @@ do
 done
 }
 
-# TODO: Main function should be an overview of what the program does. <16-02-21, melthsked> #
-# TODO: The above function should be moved to 'function MainMenu()' <16-02-21, melthsked> #
+# TODO: Main function should be an overview of what the program does and should contain the primary functionality. <16-02-21, melthsked> #
 
 function SearchInput() { # Function for rudimentary search engine
 while true

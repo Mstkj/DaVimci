@@ -7,24 +7,19 @@ options=(Docx PDF Markdown LaTeX HTML5)
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
-		echo -e "$REPLY is ${options[0]}.\n"
 		# TODO: Convert responces into lower case. <18-02-21, melthsked> #
-		in="${options[0]}" && REPLY="Docx"; SearchInput
+		# TODO: Could combine with for loop to shorten <18-02-21, melthsked> #
+		in="${options[0],,}"; SearchInput
 	elif [[ "$REPLY" = "2" ]]; then # PDF
-		echo -e "$REPLY is ${options[1]}.\n"
-		in="${options[1]}" && REPLY="PDF"; SearchInput
+		in="${options[1],,}"; SearchInput
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
-
-		in="${options[2],,}"; REPLY="Markdown"; SearchInput
-
+		in="${options[2],,}"; SearchInput
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
-		echo -e "$REPLY is ${options[3]}.\n"
-		in="${options[3]}" && REPLY="LaTeX"; SearchInput
+		in="${options[3],,}"; SearchInput
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
-		echo -e "$REPLY is ${options[4]}.\n"
-		in="${options[4]}" && REPLY="HTML5"; SearchInput
+		in="${options[4],,}"; SearchInput
 	else
-		clear ; echo -e "invalid option.\n"; Main
+		clear ; printf "invalid option.\n"; Main
 	fi
 done
 }
@@ -37,7 +32,7 @@ do
 	printf "Type filename (case sensitive).\n\n"
 	read -rp "Search:~$ " inp
 	read -rp "Set extension:~$ " ext
-	printf "\n.%s$ext\n" #DEBUG
+	printf "\n.%s$ext\n"
 	printf "Showing results containing \"%s$inp.%s$ext\":\n"
 	com="$(find . "$PWD" -maxdepth 1 -type f -print -iname "$inp" | grep ".$ext" | head -15)"; printf "\n%s$com\n"
 	printf "\nPress [Y] to continue or [N] to search:~$ "; read -rp "" res
@@ -63,28 +58,21 @@ options=(Docx PDF Markdown LaTeX HTML5 ePub)
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
-		echo -e "Input set  $REPLY is ${options[0]}.\n"
-		out="${options[0]}"; PdfEngine
+		out="${options[0],,}"; PdfEngine
 	elif [[ "$REPLY" = "2" ]]; then # PDF
 		# TODO: Is PDF LaTeX or HTML? <18-02-21, melthsked> #
-		echo -e "Option $REPLY is ${options[1]}.\n"
-		out="${options[1]}"; PdfEngine
+		out="${options[1],,}"; PdfEngine
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
-
 		out="${options[2],,}"; PdfEngine
-
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
 		# TODO: we're assuming that  LaTeX is an actual .tex LaTeX document and not a PDF. <18-02-21, melthsked> #
-	#	echo -e "Option $REPLY is ${options[3]}.\n"
-		out="${options[3]}"; PdfEngine
+		out="${options[3],,}"; PdfEngine
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
-		echo -e "Option $REPLY is ${options[4]}.\n"
-		out="${options[4]}"; PdfEngine
+		out="${options[4],,}"; PdfEngine
 	elif [[ "$REPLY" = "6" ]]; then # ePub
-		echo -e "Option $REPLY is ${options[5]}.\n"
-		out="${options[5]}"; PdfEngine
+		out="${options[5],,}"; PdfEngine
 	else
-		clear ; echo -e "invalid option.\n"; SearchOutput
+		clear ; printf "invalid option.\n"; SearchOutput
 	fi
 done
 # TODO: If output LaTeX, publish to Tex or PDF? <16-02-21, melthsked> #
@@ -97,11 +85,11 @@ printf "%s${options[0]} will accept HTML/CSS syntax.\n%s${options[1]} will accep
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
-		echo -e "Input set $REPLY is ${options[0]}.\n"; engine="--pdf-engine=${options[0]}"; SelectTemplate
+		engine="--pdf-engine=${options[0]}"; SelectTemplate
 	elif [[ "$REPLY" = "2" ]]; then # PDF
-		echo -e "option $REPLY is ${options[1]}.\n"; engine="--pdf-engine=${options[1]}"; SelectTemplate
+		engine="--pdf-engine=${options[1]}"; SelectTemplate
 	else
-		clear ; echo -e "invalid option.\n"; PdfEngine
+		clear ; printf "invalid option.\n"; PdfEngine
 	fi
 done
 }

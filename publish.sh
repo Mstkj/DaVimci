@@ -64,8 +64,8 @@ do
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
 
 		# TODO: we're assuming that  LaTeX is an actual .tex LaTeX document and not a PDF. <18-02-21, melthsked> #
-		out="${options[3],,}"; PdfEngine
-		FinalOutput="$out.pdf"
+		out="${options[3],,}"; FinalOutput="$out.pdf"; PdfEngine
+
 
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
 		out="${options[4],,}"; PdfEngine
@@ -178,6 +178,8 @@ function PaperSize() {
 # TODO: Are you compiling multiple source documents <16-02-21, melthsked> #
 # TODO: Are you self-publishing an ePub? <16-02-21, melthsked> #
 # TODO: Are you using header.tex <16-02-21, melthsked> #
+# TODO: Code classes indentation. <18-02-21, melthsked> #
+# TODO: Highlight styling <18-02-21, melthsked> #
 
 function PandocOutputCommand() {
 # TODO: iterate through values in array <18-02-21, melthsked> #

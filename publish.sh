@@ -107,7 +107,6 @@ function SelectTemplate() {
 printf "Press [Y] to use template and [N] to continue without:~$ "; read -rp "" res
 case "$res" in
 	[yY][eE][sS]|[yY])
-		# TODO: Why does this always loop back to SearchOutput?? <16-02-21, melthsked> #
 		PS3="Select Template:~$ "
 		options=(Tex HTML)
 		select menu in "${options[@]}"
@@ -153,7 +152,7 @@ case "$res" in
 	Metadata
 	;;
 	*)
-	printf "\nInvalid response, try again...\n"
+	printf "\nInvalid response...\n"
 esac
 }
 
@@ -161,18 +160,18 @@ function Metadata() {
 printf "Use metadata.xml? "; read -rp " [Y/n] " res
 case "$res" in
 [yY][eE][sS]|[yY])
-	metadata="--metadata-file=metadata.xml"; Class
+	metadata="--metadata-file=metadata.xml"; ArticleClass
 	;;
 [nY][oO]|[nN])
-	Class
+	ArticleClass
 	;;
 	*)
-	printf "\nInvalid response, try again...\n"
+	printf "\nInvalid response...\n"
 esac
 }
 
-function Class() {
-	class="document-class=article"; PandocOutputCommand
+function ArticleClass() {
+	class="document-class=article"; printf "%s$class"; PandocOutputCommand
 	# TODO: Choose class. Currently, article is only available class. It will be the default. <16-02-21, melthsked> #
 }
 

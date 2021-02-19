@@ -156,7 +156,7 @@ case "$res" in
 	metadata="--metadata-file=metadata.xml"; ArticleClass
 	;;
 [nY][oO]|[nN])
-	ArticleClass
+	unset metadata; ArticleClass
 	;;
 	*)
 	printf "\nInvalid response...\n"

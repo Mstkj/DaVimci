@@ -70,12 +70,12 @@ do
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
 
 		#FORM_OUT="${options[2]}"
-		printf "\nOutput set to %s${options[2]}.\n\n" # DEBUG
+		#printf "\nOutput set to %s${options[2]}.\n\n" # DEBUG
 		out="${options[2]}"; PdfEngine
 
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
 		# TODO: we're assuming that  LaTeX is an actual .tex LaTeX document and not a PDF. <18-02-21, melthsked> #
-		echo -e "Option $REPLY is ${options[3]}.\n"
+	#	echo -e "Option $REPLY is ${options[3]}.\n"
 		out="${options[3]}"; PdfEngine
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
 		echo -e "Option $REPLY is ${options[4]}.\n"
@@ -119,9 +119,11 @@ case "$res" in
 		select menu in "${options[@]}"
 		do
 			if [[ "$REPLY" = "1" ]]; then # template.tex
-				printf "%s${options[0]}.\n"; template="--template=${options[0]}"; Defaults
+				printf "%s${options[0]}.\n"
+				template="--template=template.tex"; Defaults
 			elif [[ "$REPLY" = "2" ]]; then # template.html
-				printf "%s${options[1]}.\n"; template="--template=${options[1]}"; Defaults
+				printf "%s${options[1]}.\n"
+				template="--template=template.html"; Defaults
 			else
 				printf "Invalid option.\n"; SelectTemplate
 			fi

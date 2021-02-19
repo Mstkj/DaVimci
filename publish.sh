@@ -8,13 +8,15 @@ select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
 		echo -e "$REPLY is ${options[0]}.\n"
+		# TODO: Convert responces into lower case. <18-02-21, melthsked> #
 		in="${options[0]}" && REPLY="Docx"; SearchInput
 	elif [[ "$REPLY" = "2" ]]; then # PDF
 		echo -e "$REPLY is ${options[1]}.\n"
 		in="${options[1]}" && REPLY="PDF"; SearchInput
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
-		printf "\n%s${options[2]}.\n"
-		in="${options[2]}" && REPLY="Markdown"; SearchInput
+
+		in="${options[2],,}"; REPLY="Markdown"; SearchInput
+
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
 		echo -e "$REPLY is ${options[3]}.\n"
 		in="${options[3]}" && REPLY="LaTeX"; SearchInput
@@ -69,7 +71,7 @@ do
 		out="${options[1]}"; PdfEngine
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
 
-		out="${options[2]}"; PdfEngine
+		out="${options[2],,}"; PdfEngine
 
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
 		# TODO: we're assuming that  LaTeX is an actual .tex LaTeX document and not a PDF. <18-02-21, melthsked> #
@@ -113,10 +115,10 @@ case "$res" in
 		select menu in "${options[@]}"
 		do
 			if [[ "$REPLY" = "1" ]]; then # template.tex
-				printf "%s${options[0]}.\n"
+				#printf "%s${options[0]}.\n"
 				template="--template=template.tex"; Defaults
 			elif [[ "$REPLY" = "2" ]]; then # template.html
-				printf "%s${options[1]}.\n"
+				#printf "%s${options[1]}.\n"
 				template="--template=template.html"; Defaults
 			else
 				printf "Invalid option.\n"; SelectTemplate

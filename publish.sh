@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 function Main() {
 clear
@@ -7,19 +7,19 @@ options=(Docx PDF Markdown LaTeX HTML5)
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
-		echo -e "Input set to $REPLY is ${options[0]}.\n"
+		echo -e "$REPLY is ${options[0]}.\n"
 		inp="${options[0]}" && REPLY="Docx"; SearchInput
 	elif [[ "$REPLY" = "2" ]]; then # PDF
-		echo -e "Input set to $REPLY is ${options[1]}.\n"
+		echo -e "$REPLY is ${options[1]}.\n"
 		inp="${options[1]}" && REPLY="PDF"; SearchInput
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
-		printf "\nInput set to %s${options[2]}.\n"
+		printf "\n%s${options[2]}.\n" && FORM_IN="${options[2]}" # DEBUG
 		inp="${options[2]}" && REPLY="Markdown"; SearchInput
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
-		echo -e "Input set to $REPLY is ${options[3]}.\n"
+		echo -e "$REPLY is ${options[3]}.\n"
 		inp="${options[3]}" && REPLY="LaTeX"; SearchInput
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
-		echo -e "Input set to $REPLY is ${options[4]}.\n"
+		echo -e "$REPLY is ${options[4]}.\n"
 		inp="${options[4]}" && REPLY="HTML5"; SearchInput
 	else
 		clear ; echo -e "invalid option.\n"; Main
@@ -35,14 +35,14 @@ do
 	printf "Type filename (case sensitive).\n\n"
 	read -rp "Search:~$ " inp
 	read -rp "Set extension:~$ " ext
-	#printf "\n.%s$ext\n"
+	printf "\n.%s$ext\n" #DEBUG
 	printf "Showing results containing \"%s$inp.%s$ext\":\n"
 	com="$(find . "$PWD" -maxdepth 1 -type f -print -iname "$inp" | grep ".$ext" | head -15)"; printf "\n%s$com\n"
 	printf "\nPress [Y] to continue or [N] to search:~$ "; read -rp "" res
 	case "$res" in
 		[yY][eE][sS]|[yY])
-			#read -rp "File Name:~$ " inp
-			OUTPUT="$inp.$ext"
+			# OUTPUT="$inp.$ext"
+			INPUT="$inp.$ext"
 			printf "\nInput file \"%s$inp.%s$ext\" ($REPLY) awaits output settings.\n\n"
 			SearchOutput
 			;;
@@ -62,28 +62,32 @@ select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
 		echo -e "Input set  $REPLY is ${options[0]}.\n"
-		out="${options[0]}" && REPLY="Docx"; PdfEngine
+		out="${options[0]}"; PdfEngine
 	elif [[ "$REPLY" = "2" ]]; then # PDF
 		# TODO: Is PDF LaTeX or HTML? <18-02-21, melthsked> #
 		echo -e "Option $REPLY is ${options[1]}.\n"
-		out="${options[1]}" && REPLY="PDF"; PdfEngine
+		out="${options[1]}"; PdfEngine
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
-		printf "\nOutput set to %s${options[2]}.\n\n"
-		out="${options[2]}" && REPLY="Markdown"; PdfEngine
+		FORM_OUT="${options[2]}" && printf "\nOutput set to %s${options[2]}.\n\n" # DEBUG
+		out="${options[2]}"; PdfEngine
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
 		# TODO: we're assuming that  LaTeX is an actual .tex LaTeX document and not a PDF. <18-02-21, melthsked> #
 		echo -e "Option $REPLY is ${options[3]}.\n"
-		out="${options[3]}" && REPLY="LaTeX"; PdfEngine
+		out="${options[3]}"; PdfEngine
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
 		echo -e "Option $REPLY is ${options[4]}.\n"
-		out="${options[4]}" && REPLY="HTML5"; PdfEngine
+		out="${options[4]}"; PdfEngine
 	elif [[ "$REPLY" = "6" ]]; then # ePub
 		echo -e "Option $REPLY is ${options[5]}.\n"
-		out="${options[5]}" && REPLY="ePub"; PdfEngine
+		out="${options[5]}"; PdfEngine
 	else
 		clear ; echo -e "invalid option.\n"; SearchOutput
 	fi
 done
+
+printf "Name your document:~$ "; read -rp "" name
+OUTPUT="$name.$out"
+printf "%s$OUTPUT.\n"
 # TODO: If output LaTeX, publish to Tex or PDF? <16-02-21, melthsked> #
 }
 
@@ -186,10 +190,10 @@ function PandocOutputCommand() {
 # TODO: First, verify which variables are being used. <16-02-21, melthsked> #
 # TODO: Final pandoc command function goes here; it should be a giant if statement. <16-02-21, melthsked> #
 pandoc "$defaults" -f "$FORM_IN" -t "$FORM_OUT" "$INPUT" "$engine" "$template" "$css" "$metadata" --highlight-style=monochrome -V "$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${OUTPUT}"
-exit 0
 }
 
 Main "$@" || [[ -z "${!$?}" ]] && print Failed ; exit 1
+exit 0
 
 # Variables Key:
 #		$FORM_IN 	= input format
@@ -203,4 +207,4 @@ Main "$@" || [[ -z "${!$?}" ]] && print Failed ; exit 1
 #		$metadata = metadata.xml
 #		$class 		= article or other option
 
-#pandoc "$defaults" -f "$FORM_IN" -t "$FORM_OUT" "$INPUT" --pdf-engine="$engine" --template="$template" --css="$css" --metadata-file="$metadata" --highlight-style=monochrome -V document-class="$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${OUTPUT}"
+pandoc "$defaults" -f "$FORM_IN" -t "$FORM_OUT" "$INPUT" --pdf-engine="$engine" --template="$template" --css="$css" --metadata-file="$metadata" --highlight-style=monochrome -V document-class="$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${OUTPUT}"

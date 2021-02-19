@@ -88,7 +88,7 @@ done
 }
 
 function PdfEngine() {
-PS5="Enter PDF Format:~$ "
+PS3="Enter PDF Format:~$ "
 options=(wkhtmltopdf xelatex)
 printf "%s${options[0]} will accept HTML/CSS syntax.\n%s${options[1]} will accept LaTeX.\n"
 select menu in "${options[@]}"
@@ -108,7 +108,7 @@ printf "Press [Y] to use template and [N] to continue without:~$ "; read -rp "" 
 case "$res" in
 	[yY][eE][sS]|[yY])
 		# TODO: Why does this always loop back to SearchOutput?? <16-02-21, melthsked> #
-		PS6="Select Template:~$ "
+		PS3="Select Template:~$ "
 		options=(Tex HTML)
 		select menu in "${options[@]}"
 		do

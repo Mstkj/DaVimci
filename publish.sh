@@ -186,10 +186,10 @@ function PandocOutputCommand() {
 # TODO: First, verify which variables are being used. <16-02-21, melthsked> #
 # TODO: Final pandoc command function goes here; it should be a giant if statement. <16-02-21, melthsked> #
 pandoc "$defaults" -f "$FORM_IN" -t "$FORM_OUT" "$INPUT" "$engine" "$template" "$css" "$metadata" --highlight-style=monochrome -V "$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${OUTPUT}"
+exit 0
 }
 
 Main "$@" || [[ -z "${!$?}" ]] && print Failed ; exit 1
-exit 0
 
 # Variables Key:
 #		$FORM_IN 	= input format
@@ -202,4 +202,5 @@ exit 0
 #		$css 			= styles.css
 #		$metadata = metadata.xml
 #		$class 		= article or other option
-pandoc "$defaults" -f "$FORM_IN" -t "$FORM_OUT" "$INPUT" --pdf-engine="$engine" --template="$template" --css="$css" --metadata-file="$metadata" --highlight-style=monochrome -V document-class="$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${OUTPUT}"
+
+#pandoc "$defaults" -f "$FORM_IN" -t "$FORM_OUT" "$INPUT" --pdf-engine="$engine" --template="$template" --css="$css" --metadata-file="$metadata" --highlight-style=monochrome -V document-class="$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${OUTPUT}"

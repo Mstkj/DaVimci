@@ -176,36 +176,35 @@ function PaperSize() {
 # TODO: Bibliography references.bib function goes here <16-02-21, melthsked> #
 # TODO: function for choosing cover.jpg <16-02-21, melthsked> #
 # TODO: Are you compiling multiple source documents <16-02-21, melthsked> #
-# TODO: Are you self-publishing an ePub <16-02-21, melthsked> #
+# TODO: Are you self-publishing an ePub? <16-02-21, melthsked> #
 # TODO: Are you using header.tex <16-02-21, melthsked> #
 
 function PandocOutputCommand() {
 # TODO: iterate through values in array <18-02-21, melthsked> #
 
 array0=(
-"$in"
-"$out"
-"$metadata"
-"$class"
-"$inp"
-"$ext"
-"$INPUT"
-"$engine"
-"$template"
-"$css"
-"$name"
-"$FinalOutput"
-"$papersize"
+	"$in"
+	"$out"
+	"$metadata"
+	"$class"
+	"$inp"
+	"$ext"
+	"$INPUT"
+	"$engine"
+	"$template"
+	"$css"
+	"$name"
+	"$FinalOutput"
+	"$papersize"
 )
 
 for i in "${array0[@],,}"
 do
 	:
-	printf "%s$i"; sleep 0.5
+	printf "%s$i\n"; sleep 0.5
 	[[ -z "${array0[*]}" ]] && printf "\n%s$i does not exist.\n"
 done
 
-# TODO: First, verify which variables are being used. <16-02-21, melthsked> #
 # TODO: Final pandoc command function goes here; it should be a giant if statement. <16-02-21, melthsked> #
 
 pandoc "$defaults" -f "$in" -t "$out" "$INPUT" "$engine" "$template" "$css" "$metadata" --highlight-style=monochrome -V "$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${FinalOutput}"
@@ -213,3 +212,40 @@ pandoc "$defaults" -f "$in" -t "$out" "$INPUT" "$engine" "$template" "$css" "$me
 
 Main "$@" || [[ -z "${!$?}" ]] && print Failed ; exit 1
 exit 0
+
+
+# TODO: TEST FUNCTION MAIN <18-02-21, melthsked> #
+# TODO: <18-02-21, yourname> #
+function main() {
+clear
+PS3="Enter input format:~$ "
+options=(
+	Main
+	SearchInput
+	SearchOutput
+	PdfEngine
+	SelectTemplate
+	Defaults
+	StyleCSS
+	Metadata
+	ArticleClass
+	PaperSize
+	PandocOutputCommand
+)
+select menu in "${options[@]}"
+do
+	if [[ "$REPLY" = "1" ]]; then
+		in="${options[0],,}";
+	elif [[ "$REPLY" = "2" ]]; then
+		in="${options[1],,}";
+	elif [[ "$REPLY" = "3" ]]; then
+		in="${options[2],,}";
+	elif [[ "$REPLY" = "4" ]]; then
+		in="${options[3],,}";
+	elif [[ "$REPLY" = "5" ]]; then
+		in="${options[4],,}";
+	else
+		clear ; printf "invalid option.\n"; Main
+	fi
+done
+}

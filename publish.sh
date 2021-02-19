@@ -7,8 +7,6 @@ options=(Docx PDF Markdown LaTeX HTML5)
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
-		# TODO: Convert responces into lower case. <18-02-21, melthsked> #
-		# TODO: Could combine with for loop to shorten <18-02-21, melthsked> #
 		in="${options[0],,}"; SearchInput
 	elif [[ "$REPLY" = "2" ]]; then # PDF
 		in="${options[1],,}"; SearchInput
@@ -31,8 +29,7 @@ while true
 do
 	printf "Type filename (case sensitive).\n\n"; read -rp "Search:~$ " inp
 	read -rp "Set extension:~$ " ext
-	#printf "\n.%s$ext\n"
-	#printf "Showing results containing \"%s$inp.%s$ext\":\n"
+	# TODO: If statement to automatically assume file extension in find command based on bash MIME type of file $in. <18-02-21, melthsked> #
 	com="$(find . "$PWD" -maxdepth 1 -type f -print -iname "$inp" | grep ".$ext" | head -15)"; printf "\n%s$com\n"
 	printf "\nPress [Y] to continue or [N] to search:~$ "; read -rp "" res
 	case "$res" in
@@ -64,8 +61,7 @@ do
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
 
 		# TODO: we're assuming that  LaTeX is an actual .tex LaTeX document and not a PDF. <18-02-21, melthsked> #
-		out="${options[3],,}"; FinalOutput="$out.pdf"; PdfEngine
-
+		out="${options[3],,}"; FinalOutput="$name.pdf"; PdfEngine
 
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
 		out="${options[4],,}"; PdfEngine
@@ -103,10 +99,8 @@ case "$res" in
 		select menu in "${options[@]}"
 		do
 			if [[ "$REPLY" = "1" ]]; then # template.tex
-				#printf "%s${options[0]}.\n"
 				template="--template=template.tex"; Defaults
 			elif [[ "$REPLY" = "2" ]]; then # template.html
-				#printf "%s${options[1]}.\n"
 				template="--template=template.html"; Defaults
 			else
 				printf "Invalid option.\n"; SelectTemplate
@@ -156,7 +150,8 @@ case "$res" in
 	metadata="--metadata-file=metadata.xml"; ArticleClass
 	;;
 [nY][oO]|[nN])
-	unset metadata; ArticleClass
+	#unset metadata; ArticleClass
+	metadata=" "; ArticleClass
 	;;
 	*)
 	printf "\nInvalid response...\n"
@@ -187,67 +182,28 @@ function PandocOutputCommand() {
 array0=(
 	"$in"
 	"$out"
-	"$metadata"
-	"$class"
-	"$inp"
-	"$ext"
 	"$INPUT"
 	"$engine"
 	"$template"
 	"$css"
-	"$name"
-	"$FinalOutput"
+	"$metadata"
+	"$class"
 	"$papersize"
+	"$FinalOutput"
 )
 
 for i in "${array0[@],,}"
 do
 	:
 	printf "%s$i\n"; sleep 0.5
-	[[ -z "${array0[*]}" ]] && printf "\n%s$i does not exist.\n"
+	[[ -z "$i" ]] || printf "\n%s$i exists.\n"
+	[[ -z "$i" ]] && printf "\n%s$i does not exist.\n"
 done
 
-# TODO: Final pandoc command function goes here; it should be a giant if statement. <16-02-21, melthsked> #
+# TODO: Final pandoc command function goes here; it should be a giant if statement in for loop. Should be procedural: if this, goto x. <16-02-21, melthsked> #
 
-pandoc "$defaults" -f "$in" -t "$out" "$INPUT" "$engine" "$template" "$css" "$metadata" --highlight-style=monochrome -V "$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${FinalOutput}"
+pandoc "$defaults" -f "$in" -t "$out" "$INPUT" "$engine" "$template" "$css" "$metadata" --highlight-style=monochrome -V "$class" -V "$papersize" --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${FinalOutput}"
 }
 
 Main "$@" || [[ -z "${!$?}" ]] && print Failed ; exit 1
 exit 0
-
-
-# TODO: TEST FUNCTION MAIN <18-02-21, melthsked> #
-# TODO: <18-02-21, yourname> #
-function main() {
-clear
-PS3="Enter input format:~$ "
-options=(
-	Main
-	SearchInput
-	SearchOutput
-	PdfEngine
-	SelectTemplate
-	Defaults
-	StyleCSS
-	Metadata
-	ArticleClass
-	PaperSize
-	PandocOutputCommand
-)
-select menu in "${options[@]}"
-do
-	if [[ "$REPLY" = "1" ]]; then
-		in="${options[0],,}";
-	elif [[ "$REPLY" = "2" ]]; then
-		in="${options[1],,}";
-	elif [[ "$REPLY" = "3" ]]; then
-		in="${options[2],,}";
-	elif [[ "$REPLY" = "4" ]]; then
-		in="${options[3],,}";
-	elif [[ "$REPLY" = "5" ]]; then
-		in="${options[4],,}";
-	else
-		clear ; printf "invalid option.\n"; Main
-	fi
-done
-}

@@ -55,6 +55,7 @@ done
 }
 
 function SearchOutput() {
+printf "Enter document title:~$ "; read -rp "" OutputName
 PS3="Enter output format:~$ "
 options=(Docx PDF Markdown LaTeX HTML5 ePub)
 select menu in "${options[@]}"
@@ -84,8 +85,6 @@ do
 		clear ; echo -e "invalid option.\n"; SearchOutput
 	fi
 done
-
-printf "Enter document title:~$ "; read -rp "" OutputName
 # TODO: If output LaTeX, publish to Tex or PDF? <16-02-21, melthsked> #
 }
 

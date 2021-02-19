@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 function Main() {
 clear
@@ -65,8 +65,11 @@ do
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
 		out="${options[2],,}"; PdfEngine
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
+
 		# TODO: we're assuming that  LaTeX is an actual .tex LaTeX document and not a PDF. <18-02-21, melthsked> #
 		out="${options[3],,}"; PdfEngine
+		FinalOutput="$out.pdf"
+
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
 		out="${options[4],,}"; PdfEngine
 	elif [[ "$REPLY" = "6" ]]; then # ePub
@@ -176,12 +179,38 @@ function ArticleClass() {
 # TODO: Are you using header.tex <16-02-21, melthsked> #
 
 function PandocOutputCommand() {
+# TODO: iterate through values in array <18-02-21, melthsked> #
+
+arr=(
+"$in"
+"$out"
+"$metadata"
+)
+
+for i in "${arr[@]}"
+do
+	:
+	printf "%s$i"
+done
+
+#tools=(
+#	"recoll"
+#	"mlocate"
+#	"aspell"
+#)
+#declare -A packages=(
+#	[${tools[0]}]="recoll"
+#	[${tools[1]}]="mlocate"
+#	[${tools[2]}]="aspell"
+#)
+
+[[ -z "${metadata}" ]] && printf "\nmetadata.xml does not exist.\n"
+
 # TODO: First, verify which variables are being used. <16-02-21, melthsked> #
 # TODO: Final pandoc command function goes here; it should be a giant if statement. <16-02-21, melthsked> #
-pandoc "$defaults" -f "$in" -t "$out" "$INPUT" "$engine" "$template" "$css" "$metadata" --highlight-style=monochrome -V "$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${OutputName}"
+
+pandoc "$defaults" -f "$in" -t "$out" "$INPUT" "$engine" "$template" "$css" "$metadata" --highlight-style=monochrome -V "$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${FinalOutput}"
 }
 
 Main "$@" || [[ -z "${!$?}" ]] && print Failed ; exit 1
 exit 0
-
-pandoc "$defaults" -f "$FORM_IN" -t "$FORM_OUT" "$INPUT" --pdf-engine="$engine" --template="$template" --css="$css" --metadata-file="$metadata" --highlight-style=monochrome -V document-class="$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${OutputName}"

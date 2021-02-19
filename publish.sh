@@ -26,21 +26,18 @@ done
 
 # TODO: Main function should be an overview of what the program does and should contain the primary functionality. <16-02-21, melthsked> #
 
-function SearchInput() { # Function for rudimentary search engine
+function SearchInput() {
 while true
 do
-	printf "Type filename (case sensitive).\n\n"
-	read -rp "Search:~$ " inp
+	printf "Type filename (case sensitive).\n\n"; read -rp "Search:~$ " inp
 	read -rp "Set extension:~$ " ext
-	printf "\n.%s$ext\n"
-	printf "Showing results containing \"%s$inp.%s$ext\":\n"
+	#printf "\n.%s$ext\n"
+	#printf "Showing results containing \"%s$inp.%s$ext\":\n"
 	com="$(find . "$PWD" -maxdepth 1 -type f -print -iname "$inp" | grep ".$ext" | head -15)"; printf "\n%s$com\n"
 	printf "\nPress [Y] to continue or [N] to search:~$ "; read -rp "" res
 	case "$res" in
 		[yY][eE][sS]|[yY])
-			INPUT="$inp.$ext"
-			printf "\nInput file \"%s$inp.%s$ext\" ($REPLY) awaits output settings.\n\n"
-			SearchOutput
+			INPUT="$inp.$ext"; SearchOutput
 			;;
 		[nY][oO]|[nN])
 			SearchInput
@@ -52,7 +49,7 @@ done
 }
 
 function SearchOutput() {
-printf "Enter document title:~$ "; read -rp "" OutputName
+printf "Enter document title:~$ "; read -rp "" name
 PS3="Enter output format:~$ "
 options=(Docx PDF Markdown LaTeX HTML5 ePub)
 select menu in "${options[@]}"
@@ -60,7 +57,7 @@ do
 	if [[ "$REPLY" = "1" ]]; then # Docx
 		out="${options[0],,}"; PdfEngine
 	elif [[ "$REPLY" = "2" ]]; then # PDF
-		# TODO: Is PDF LaTeX or HTML? <18-02-21, melthsked> #
+		# TODO: Is PDF LaTeX or HTML syntax? <18-02-21, melthsked> #
 		out="${options[1],,}"; PdfEngine
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
 		out="${options[2],,}"; PdfEngine
@@ -167,8 +164,12 @@ esac
 }
 
 function ArticleClass() {
-	class="document-class=article"; printf "%s$class"; PandocOutputCommand
+	class="document-class=article"; printf "%s$class"; PaperSize
 	# TODO: Choose class. Currently, article is only available class. It will be the default. <16-02-21, melthsked> #
+}
+
+function PaperSize() {
+	papersize="A4"; PandocOutputCommand # TODO: Choose paper size; currently, A4 is only option. <18-02-21, melthsked> #
 }
 
 # TODO: Function for opt-in csl and selecting format if so. <16-02-21, melthsked> #
@@ -181,30 +182,28 @@ function ArticleClass() {
 function PandocOutputCommand() {
 # TODO: iterate through values in array <18-02-21, melthsked> #
 
-arr=(
+array0=(
 "$in"
 "$out"
 "$metadata"
+"$class"
+"$inp"
+"$ext"
+"$INPUT"
+"$engine"
+"$template"
+"$css"
+"$name"
+"$FinalOutput"
+"$papersize"
 )
 
-for i in "${arr[@]}"
+for i in "${array0[@],,}"
 do
 	:
-	printf "%s$i"
+	printf "%s$i"; sleep 0.5
+	[[ -z "${array0[*]}" ]] && printf "\n%s$i does not exist.\n"
 done
-
-#tools=(
-#	"recoll"
-#	"mlocate"
-#	"aspell"
-#)
-#declare -A packages=(
-#	[${tools[0]}]="recoll"
-#	[${tools[1]}]="mlocate"
-#	[${tools[2]}]="aspell"
-#)
-
-[[ -z "${metadata}" ]] && printf "\nmetadata.xml does not exist.\n"
 
 # TODO: First, verify which variables are being used. <16-02-21, melthsked> #
 # TODO: Final pandoc command function goes here; it should be a giant if statement. <16-02-21, melthsked> #

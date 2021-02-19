@@ -41,7 +41,6 @@ do
 	printf "\nPress [Y] to continue or [N] to search:~$ "; read -rp "" res
 	case "$res" in
 		[yY][eE][sS]|[yY])
-			# OUTPUT="$inp.$ext"
 			INPUT="$inp.$ext"
 			printf "\nInput file \"%s$inp.%s$ext\" ($REPLY) awaits output settings.\n\n"
 			SearchOutput
@@ -69,8 +68,6 @@ do
 		out="${options[1]}"; PdfEngine
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
 
-		#FORM_OUT="${options[2]}"
-		#printf "\nOutput set to %s${options[2]}.\n\n" # DEBUG
 		out="${options[2]}"; PdfEngine
 
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
@@ -88,14 +85,12 @@ do
 	fi
 done
 
-printf "Name your document:~$ "; read -rp "" name
-OUTPUT="$name."
-printf "%s$OUTPUT.\n"
+printf "Enter document title:~$ "; read -rp "" OutputName
 # TODO: If output LaTeX, publish to Tex or PDF? <16-02-21, melthsked> #
 }
 
 function PdfEngine() {
-PS3="Enter PDF Format:~$ "
+PS3="Select PDF engine:~$ "
 options=(wkhtmltopdf xelatex)
 printf "%s${options[0]} will accept HTML/CSS syntax.\n%s${options[1]} will accept LaTeX.\n"
 select menu in "${options[@]}"
@@ -194,22 +189,10 @@ function ArticleClass() {
 function PandocOutputCommand() {
 # TODO: First, verify which variables are being used. <16-02-21, melthsked> #
 # TODO: Final pandoc command function goes here; it should be a giant if statement. <16-02-21, melthsked> #
-pandoc "$defaults" -f "$in" -t "$out" "$INPUT" "$engine" "$template" "$css" "$metadata" --highlight-style=monochrome -V "$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${OUTPUT}"
+pandoc "$defaults" -f "$in" -t "$out" "$INPUT" "$engine" "$template" "$css" "$metadata" --highlight-style=monochrome -V "$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${OutputName}"
 }
 
 Main "$@" || [[ -z "${!$?}" ]] && print Failed ; exit 1
 exit 0
 
-# Variables Key:
-#		$FORM_IN 	= input format
-#		$FORM_OUT = output format
-#		$INPUT 		= input file name + extension
-#		${OUTPUT} = output file name
-#		$engine 	= HTML or LaTeX
-#		$template = either HTML or Tex
-#		$defaults = defaults.yaml
-#		$css 			= styles.css
-#		$metadata = metadata.xml
-#		$class 		= article or other option
-
-pandoc "$defaults" -f "$FORM_IN" -t "$FORM_OUT" "$INPUT" --pdf-engine="$engine" --template="$template" --css="$css" --metadata-file="$metadata" --highlight-style=monochrome -V document-class="$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${OUTPUT}"
+pandoc "$defaults" -f "$FORM_IN" -t "$FORM_OUT" "$INPUT" --pdf-engine="$engine" --template="$template" --css="$css" --metadata-file="$metadata" --highlight-style=monochrome -V document-class="$class" -V papersize=A4 --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${OutputName}"

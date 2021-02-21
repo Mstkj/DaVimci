@@ -150,8 +150,7 @@ case "$res" in
 	metadata="--metadata-file=metadata.xml"; ArticleClass
 	;;
 [nY][oO]|[nN])
-	#unset metadata; ArticleClass
-	metadata=" "; ArticleClass
+	unset metadata; ArticleClass
 	;;
 	*)
 	printf "\nInvalid response...\n"
@@ -164,10 +163,10 @@ function ArticleClass() {
 }
 
 function PaperSize() {
-	papersize="A4"; PandocOutputCommand # TODO: Choose paper size; currently, A4 is only option. <18-02-21, melthsked> #
+	papersize="papersize=A4"; PandocOutputCommand # TODO: Choose paper size; currently, A4 is only option. <18-02-21, melthsked> #
 }
 
-# TODO: Function for opt-in csl and selecting format if so. <16-02-21, melthsked> #
+# TODO: opt-in csl and selecting format if so. <16-02-21, melthsked> #
 # TODO: Bibliography references.bib function goes here <16-02-21, melthsked> #
 # TODO: function for choosing cover.jpg <16-02-21, melthsked> #
 # TODO: Are you compiling multiple source documents <16-02-21, melthsked> #

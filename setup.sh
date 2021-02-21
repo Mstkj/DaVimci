@@ -61,16 +61,7 @@ function InstallEssentials() {
 		[${tools[2]}]="aspell"
 	)
 	for i in "${tools[@]}"; do
-		#[ "$(command -v "${tools[0]}")" ] || sudo apt install "${tools[0]}"
-		#[ "$(command -v "${tools[1]}")" ] || sudo apt install "${tools[1]}"
-	  	echo "${i}"
-	  	if ! hash "${i}" 2> /dev/null; then
-	    		echo "Error"
-	    		echo " (${packages[${i}]})" ; echo -e "\r"
-	  	else
-			#TODO
-			exit 0
-	  	fi
+		[[ ! "$(command -v "${i}" 2> /dev/null)" ]] && sudo apt install "${packages[${i}]}" -y # Could use "hash" command.
 	done
 }
 
@@ -183,7 +174,7 @@ fi
 
 # Unzip writing files
 # Setting file permissions
-chmod +x build.sh publish.sh compile.sh
+chmod +x build.sh publish.sh #compile.sh
 chmod 775 -R *
 # TODO chown -R $USR *
 # TODO Create a .desktop launcher for Neo DaVimci IDE & Writer and symlink in /usr/bin
@@ -238,3 +229,5 @@ git clone https://github.com/ohmyzsh/ohmyzsh.git
 # TODO fix "%%20" in font file names after download and replace "%%20" with underscore; this will fix devicons
 # TODO Would you  like to add further terminal functionality? Add from ubuntu-setup.sh
 # TODO Remember to implement rest of script functionality from notes in README.md
+
+# TODO: install xelatex pdf engine for pandoc LaTeX: install as texlive-xetex. <18-02-21, melthsked> #

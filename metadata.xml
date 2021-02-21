@@ -1,0 +1,9 @@
+<dc:title id="title">Document Title: Subtitle</dc:title>
+<meta refines="#title" property="title-type">Main</meta>
+<dc:language>en-US</dc:language>
+<dc:creator id="metadata_id_creator">First and Last Name</dc:creator>
+<dc:publisher>Publisher Name</dc:publisher>
+<dc:date>2020-09-09</dc:date>
+<dc:rights>Copyright © 2020 by Romero A. Jorin Ryms</dc:rights>
+<dc:rights>Creative Commons</dc:rights>
+<dc:language>en-US</dc:language>

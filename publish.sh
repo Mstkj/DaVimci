@@ -7,31 +7,37 @@ options=(Docx PDF Markdown LaTeX HTML5)
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
+		ext="docx" # not docm, doc or other?
 		in="${options[0],,}"; SearchInput
 	elif [[ "$REPLY" = "2" ]]; then # PDF
+		ext="pdf"
 		in="${options[1],,}"; SearchInput
 	elif [[ "$REPLY" = "3" ]]; then # Markdown
+		ext="md"
 		in="${options[2],,}"; SearchInput
 	elif [[ "$REPLY" = "4" ]]; then # LaTeX
+		ext="tex" # tex or pdf or other?
 		in="${options[3],,}"; SearchInput
 	elif [[ "$REPLY" = "5" ]]; then # HTML5
+		ext="html"
 		in="${options[4],,}"; SearchInput
 	else
-		clear ; printf "invalid option.\n"; Main
+		InvalidResponse; Main
 	fi
 done
 }
 
 # TODO: Main function should be an overview of what the program does and should contain the primary functionality. <16-02-21, melthsked> #
+function InvalidResponse() {
+	printf "Invalid response...\n"
+}
 
 function SearchInput() {
 while true
-do
-	printf "Type filename (case sensitive).\n\n"; read -rp "Search:~$ " inp
-	read -rp "Set extension:~$ " ext
-	# TODO: If statement to automatically assume file extension in find command based on bash MIME type of file $in. <18-02-21, melthsked> #
-	com="$(find . "$PWD" -maxdepth 1 -type f -print -iname "$inp" | grep ".$ext" | head -15)"; printf "\n%s$com\n"
-	printf "\nPress [Y] to continue or [N] to search:~$ "; read -rp "" res
+do # test MIME type of file and match with extension to determine $inp.
+	com="$(find . "$PWD" -maxdepth 1 -type f -print -iname "*.$ext" | head -15)"
+	printf "\n%s$com\n" # removed "grep ".$ext"
+	read -rp "File Name:~$ " inp
 	case "$res" in
 		[yY][eE][sS]|[yY])
 			INPUT="$inp.$ext"; SearchOutput
@@ -40,7 +46,7 @@ do
 			SearchInput
 			;;
 			*)
-			printf "\nInvalid response, try again...\n"
+			InvalidResponse
 	esac
 done
 }
@@ -48,36 +54,41 @@ done
 function SearchOutput() {
 printf "Enter document title:~$ "; read -rp "" name
 PS3="Enter output format:~$ "
-options=(Docx PDF Markdown LaTeX HTML5 ePub)
+options=(Docx Markdown LaTeX HTML5 ePub)
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
-		out="${options[0],,}"; PdfEngine
-	elif [[ "$REPLY" = "2" ]]; then # PDF
-		# TODO: Is PDF LaTeX or HTML syntax? <18-02-21, melthsked> #
-		out="${options[1],,}"; PdfEngine
-	elif [[ "$REPLY" = "3" ]]; then # Markdown
-		out="${options[2],,}"; PdfEngine
-	elif [[ "$REPLY" = "4" ]]; then # LaTeX
-
-		# TODO: we're assuming that  LaTeX is an actual .tex LaTeX document and not a PDF. <18-02-21, melthsked> #
-		out="${options[3],,}"; FinalOutput="$name.pdf"; PdfEngine
-
-	elif [[ "$REPLY" = "5" ]]; then # HTML5
-		out="${options[4],,}"; PdfEngine
-	elif [[ "$REPLY" = "6" ]]; then # ePub
-		out="${options[5],,}"; PdfEngine
+		out="${options[0],,}"
+	elif [[ "$REPLY" = "2" ]]; then # Markdown
+		out="${options[1],,}"
+	elif [[ "$REPLY" = "3" ]]; then # LaTeX
+		PS4="PDF or Tex"; options1=(PDF Tex)
+		select menu1 in "${options1[@]}"; do
+			out="${options[2],,}"
+			[[ "$REPLY" = "1" ]] && FinalOutput="$name.pdf"; PdfEngine
+			[[ "$REPLY" = "2" ]] && FinalOutput="$name.tex"
+			[[ ! "$REPLY" = "1" ]] && [[ ! "$REPLY" = "1" ]] && InvalidResponse; SearchOutput
+		done
+	elif [[ "$REPLY" = "4" ]]; then # HTML5
+		PS5="Webpage or PDF"; options2=(Webpage or PDF)
+		select menu2 in "${options2[@]}"; do
+			out="${options[3],,}"
+			[[ "$REPLY" = "1" ]] && FinalOutput="$name.html"
+			[[ "$REPLY" = "2" ]] && FinalOutput="$name.pdf"; PdfEngine
+			[[ ! "$REPLY" = "1" ]] && [[ ! "$REPLY" = "2" ]] && InvalidResponse; SearchOutput
+		done
+	elif [[ "$REPLY" = "5" ]]; then # ePub
+		out="${options[4],,}"
 	else
-		clear ; printf "invalid option.\n"; SearchOutput
+		InvalidResponse; SearchOutput
 	fi
 done
-# TODO: If output LaTeX, publish to Tex or PDF? <16-02-21, melthsked> #
 }
 
 function PdfEngine() {
 PS3="Select PDF engine:~$ "
 options=(wkhtmltopdf xelatex)
-printf "%s${options[0]} will accept HTML/CSS syntax.\n%s${options[1]} will accept LaTeX.\n"
+printf "%s${options[0]} will accept HTML syntax & LaTeX for %s${options[1]}.\n"
 select menu in "${options[@]}"
 do
 	if [[ "$REPLY" = "1" ]]; then # Docx
@@ -125,7 +136,7 @@ case "$res" in
 	StyleCSS
 	;;
 	*)
-	printf "\nInvalid response, try again...\n"
+	InvalidResponse
 esac
 }
 
@@ -139,7 +150,7 @@ case "$res" in
 	Metadata
 	;;
 	*)
-	printf "\nInvalid response...\n"
+	InvalidResponse
 esac
 }
 
@@ -153,31 +164,21 @@ case "$res" in
 	unset metadata; ArticleClass
 	;;
 	*)
-	printf "\nInvalid response...\n"
+	InvalidResponse
 esac
 }
 
 function ArticleClass() {
 	class="document-class=article"; printf "%s$class"; PaperSize
-	# TODO: Choose class. Currently, article is only available class. It will be the default. <16-02-21, melthsked> #
+	# TODO: Currently, article is only available class. <16-02-21, melthsked> #
 }
 
 function PaperSize() {
-	papersize="papersize=A4"; PandocOutputCommand # TODO: Choose paper size; currently, A4 is only option. <18-02-21, melthsked> #
+	papersize="papersize=A4"; PandocOutputCommand # TODO: Currently, A4 is only option. <18-02-21, melthsked> #
 }
 
-# TODO: opt-in csl and selecting format if so. <16-02-21, melthsked> #
-# TODO: Bibliography references.bib function goes here <16-02-21, melthsked> #
-# TODO: function for choosing cover.jpg <16-02-21, melthsked> #
-# TODO: Are you compiling multiple source documents <16-02-21, melthsked> #
-# TODO: Are you self-publishing an ePub? <16-02-21, melthsked> #
-# TODO: Are you using header.tex <16-02-21, melthsked> #
-# TODO: Code classes indentation. <18-02-21, melthsked> #
-# TODO: Highlight styling <18-02-21, melthsked> #
-
 function PandocOutputCommand() {
-# TODO: iterate through values in array <18-02-21, melthsked> #
-
+# TODO: Could use awk/sed to remove unwanted conditions/variables from PandocOutputCommand. <21-02-21, melthsked> #
 array0=(
 	"$in"
 	"$out"
@@ -191,7 +192,7 @@ array0=(
 	"$FinalOutput"
 )
 
-for i in "${array0[@],,}"
+for i in "${array0[@],,}";
 do
 	:
 	printf "%s$i\n"; sleep 0.5
@@ -206,3 +207,16 @@ pandoc "$defaults" -f "$in" -t "$out" "$INPUT" "$engine" "$template" "$css" "$me
 
 Main "$@" || [[ -z "${!$?}" ]] && print Failed ; exit 1
 exit 0
+# TODO: opt-in csl and selecting format if so. <16-02-21, melthsked> #
+# TODO: Bibliography references.bib function goes here <16-02-21, melthsked> #
+# TODO: function for choosing cover.jpg <16-02-21, melthsked> #
+# TODO: Are you compiling multiple source documents <16-02-21, melthsked> #
+# TODO: Are you self-publishing an ePub? <16-02-21, melthsked> #
+# TODO: Are you using header.tex <16-02-21, melthsked> #
+# TODO: Code classes indentation. <18-02-21, melthsked> #
+# TODO: Highlight styling <18-02-21, melthsked> #
+
+# DEBUG
+# TODO: Keeps looping back to SelectTemplate <21-02-21, melthsked> #
+# To create a pdf using pandoc, use -t latex|html5
+# and specify an output file with .pdf extension (-o filename.pdf).

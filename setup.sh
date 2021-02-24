@@ -132,9 +132,13 @@ function Configure() {
 curl -sL install-node.now.sh/lts | bash
 
 # Setting up YCM
-git submodule update --init --recursive # "/home/$USR/.config/nvim/YouCompleteMe/third_party/ycmd/build.py"
 # TODO Must detect latest python version and use it over all others
-[ -e "$DIR"/nvim/YouCompleteMe ] && python3 "$DIR"/nvim/YouCompleteMe/install.py --all # This doesn't seem to work when executed in script
+if [[ -e "$DIR"/nvim/YouCompleteMe/ ]]; then
+	git submodule update --init --recursive # "/home/$USR/.config/nvim/YouCompleteMe/third_party/ycmd/build.py"
+	python3 "$DIR"/nvim/YouCompleteMe/install.py --all # This doesn't seem to work when executed in script
+elif [[ ! -e "$DIR"/nvim/YouCompleteMe ]]; then
+	exit 1
+fi
 
 # Installing fzf
 [ -e "$DIR"/nvim/fzf ] && "$DIR"/nvim/fzf/install
@@ -152,8 +156,8 @@ cp "$DIR"/nvim/fonts/*.gz /home/"$USR"/.local/share/fonts/FantasqueSansMono-Larg
 
 # Unzip writing files & set permissions
 chmod +x build.sh publish.sh
-chown -R "$USR:$USR" '*'
-chmod 775 -R '*'
+chown -R "$USR:$USR" *
+chmod 775 -R *
 # TODO symlink NeoVim setup in /usr/bin
 
 # setting up GitHub CLI
@@ -161,13 +165,13 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
 sudo apt-add-repository https://cli.github.com/packages
 sudo apt update
 sudo apt install gh
-sudo npm i -g bash-language-server #see README.md for more
+sudo npm i -g bash-language-server # see README.md for more
 echo "You must run \`gh auth login\`"
 
 # coc-ccls: main file ./lib/extension.js not found, you may need to build the project
 npm i coc-ccls # do in root directory of coc.nvim in nvim/autoload/plugged/coc.nvim
 # TODO ask to install Terminator and download Mstkj's config files from  GitHub.
-# TODO install zsh ohmyzsh termineter zshdb etc byobu
+# TODO install zsh ohmyzsh termineter zshdb byobu etc
 git clone https://github.com/ohmyzsh/ohmyzsh.git
 
 while true; do # Setup kite for all available editors

@@ -14,7 +14,6 @@ function Main() {
 	[ ! -e "$DIR"/nvim/autoload ] && mkdir "$DIR"/nvim/autoload/ && copy
 	Configure
 	sudo chown "$USR" -R "$DIR"/nvim # this is not working for some reason
-	#Menu
 	# uname -a to test for distributions
 	# echo $0 to test for shell
 	# use find command
@@ -33,21 +32,6 @@ function RequestSuperuser() { # Script requires sudo
 function InvalidResponse() {
 	printf "\nInvalid response.\n"; sleep 2.0
 }
-
-#function Menu() {
-#PS3="Start Neovim [Y/N] "
-#options=(Yes No)
-#select menu in "${options[@]}"
-#do
-#	if [[ "$REPLY" = "1" ]]; then
-#		true
-#	elif [[ "$REPLY" = "2" ]]; then
-#		true
-#	else
-#		InvalidResponse; Menu
-#	fi
-#done
-#}
 
 function InstallDependencies() {
 	tools=(
@@ -141,7 +125,6 @@ function copy() {
 	cp "$DIR"/nvim/neomake/autoload/neomake.vim "$DIR"/nvim/autoload/neomake.vim
 }
 
-# The configuration stage should utilize while loops, if and case statements, subshells, and implicit statements for security
 function Configure() {
 # Setting up coc
 curl -sL install-node.now.sh/lts | bash

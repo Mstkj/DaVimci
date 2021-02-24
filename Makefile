@@ -20,5 +20,3 @@ install:
 
 clean:
 	rm -rf tex2pdf.* ; rm debug.log ; rm template.tex ; rm template.js ; rm template.html
-
-# generate a .desktop file for linux, which should be done with "build"

@@ -1,6 +1,5 @@
 
-README.md
-> DaVimci Projektet
+DaVimci Projektet
 
 Use LaTeX for academic documents and HTML for non-academic documents
 Use as IDE for programming both small and large projects
@@ -13,7 +12,7 @@ There are instructions for my Makefile.
 # Copyright
 
 One line to give the program's name and a brief description
-Copyright © 2020, yourname
+Copyright © 2020, Jorin Ryms
 
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
@@ -124,3 +123,11 @@ pressing `\` followed by `f` runs `:FZF` in Vim.
 	# :PlugInstall
 
 You can create references.bib with Zotero
+All of your files must be in the working directory
+Edit all of your files to make sure the publication suits your needs
+learn to add custom templates to pandoc
+
+the following goes in init.vim
+let g:LanguageClient_serverCommands = {
+    \ 'sh': ['bash-language-server', 'start']
+    \ }

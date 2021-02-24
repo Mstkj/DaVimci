@@ -2,22 +2,22 @@
 
 # This script will install and configure vim as an IDE and word processor/manuscript writer.
 # DaVimci bootstrapping script
-
-# Should be automated, interactive, portable (Debian, OSX, Arch) and narrowly POSIX-compliant.
+# Should be automated, portable (Debian, OSX, Arch) and narrowly POSIX-compliant.
 # Make script find user home and neovim installation location on drive and store as variable
 
 function Main() {
-	# TODO Download and copy plugins and necessary programs
 	AcquireHome
 	RequestSuperuser
-	Programs # TODO Find a way to test if these commands succeed before continuing the script
+	InstallDependencies
 	GitClone
 	[ -e "$DIR"/nvim/autoload ] && copy
 	[ ! -e "$DIR"/nvim/autoload ] && mkdir "$DIR"/nvim/autoload/ && copy
 	Configure
 	sudo chown "$USR" -R "$DIR"/nvim # this is not working for some reason
-	# Changed from $USER to $USR
-	Menu
+	#Menu
+	# uname -a to test for distributions
+	# echo $0 to test for shell
+	# use find command
 }
 
 function AcquireHome() {
@@ -25,62 +25,66 @@ USR=$(grep ":1000:" /etc/passwd | awk -F '/' '/1/ { print $3 }' | sed 's/://g' |
 DIR=/home/$USR/.config
 }
 
-# Script requires sudo
-function RequestSuperuser() {
-[ "$(whoami)" != "root" ] && exec sudo "$PWD"/setup.sh "$0" "$*"
+function RequestSuperuser() { # Script requires sudo
+#[ "$(whoami)" != "root" ] && exec sudo "$PWD"/setup.sh "$0" "$*"
+[[ ! "$(whoami)" = "root" ]] && exec sudo ./setup.sh "$0"
 }
 
 function InvalidResponse() {
-	echo "Invalid entry." ; sleep 2.0
+	printf "\nInvalid response.\n"; sleep 2.0
 }
 
-# Menu for neovim
-# This menu is buggy
-function Menu() {
-echo "Start neovim?"
-read -r REPLY
-[ "$REPLY" = "y" ] && echo "You chose \"$REPLY\"" ; sleep 1.5 ; nvim & exit 0
-[ "$REPLY" = "n" ] && echo "You chose \"$REPLY\"" ; sleep 1.5 ; exit 0
-[ ! "$REPLY" = "y" ] && [ ! "$REPLY" = "n" ] && InvalidResponse ; Menu
-}
+#function Menu() {
+#PS3="Start Neovim [Y/N] "
+#options=(Yes No)
+#select menu in "${options[@]}"
+#do
+#	if [[ "$REPLY" = "1" ]]; then
+#		true
+#	elif [[ "$REPLY" = "2" ]]; then
+#		true
+#	else
+#		InvalidResponse; Menu
+#	fi
+#done
+#}
 
-# for citation management, I recommend Zotero/Mendeley
-# do you want to install Java jdk, runtime, gradle...?
-# if y; then sudo apt install java-common openjdk-14-jdk openjdk-14-jre gradle
-# use sudo apt install npm nodejs
-
-function InstallEssentials() {
+function InstallDependencies() {
 	tools=(
-		"recoll"
-		"mlocate"
-		"aspell"
+		"git"
+		"curl"
+		"pandoc"
+		"nvim"
+		"shellcheck"
+		"cmake"
+		"clang"
+		"clangd"
+		"ctags"
+		"python3.8"
+		"npm"
+		"js"
 	)
 	declare -A packages=(
-		[${tools[0]}]="recoll"
-		[${tools[1]}]="mlocate"
-		[${tools[2]}]="aspell"
+		[${tools[0]}]="git"
+		[${tools[1]}]="curl"
+		[${tools[2]}]="pandoc"
+		[${tools[3]}]="neovim"
+		[${tools[4]}]="shellcheck"
+		[${tools[5]}]="cmake"
+		[${tools[6]}]="clang"
+		[${tools[7]}]="clangd"
+		[${tools[8]}]="universal-ctags"
+		[${tools[9]}]="python3.8"
+		[${tools[10]}]="npm"
+		[${tools[11]}]="nodejs"
 	)
 	for i in "${tools[@]}"; do
 		[[ ! "$(command -v "${i}" 2> /dev/null)" ]] && sudo apt install "${packages[${i}]}" -y # Could use "hash" command.
 	done
 }
 
-function Programs() {
-	[ ! "$(command -v git)" ] && apt install -y git
-	[ ! "$(command -v curl)" ] && apt install -y curl
-	[ ! "$(command -v pandoc)" ] && apt install -y pandoc
-	[ ! "$(command -v nvim)" ] && apt install -y neovim
-	[ ! "$(command -v shellcheck)" ] && apt install -y shellcheck
-	[ ! "$(command -v cmake)" ] && apt install -y cmake
-	[ ! "$(command -v clang)" ] && apt install -y clang
-	[ ! "$(command -v ctags)" ] && apt install -y universal-ctags
-	[ ! "$(command -v python3.8)" ] && apt install -y python3.8
-	[ ! "$(command -v npm)" ] && apt install -y npm
-	[ ! "$(command -v clangd)" ] && apt install -y clangd
-}
-
-# Test if folders in section 2 exist
-function GitClone() {
+function GitClone() { # Test if folders in section 2 exist
+	# TODO: Will have to use an array for git links and for directories. Use for loop for testing and installing <23-02-21, melthsked> #
 	[ -e "$DIR"/nvim/vim-devicons ] || sudo git clone https://github.com/ryanoasis/vim-devicons "$DIR"/nvim/vim-devicons
 	[ -e "$DIR"/nvim/vista ] || sudo git clone https://github.com/liuchengxu/vista.vim.git "$DIR"/nvim/vista
 	[ -e "$DIR"/nvim/vim-polyglot ] || sudo git clone https://github.com/sheerun/vim-polyglot.git "$DIR"/nvim/vim-polyglot
@@ -139,12 +143,11 @@ function copy() {
 
 # The configuration stage should utilize while loops, if and case statements, subshells, and implicit statements for security
 function Configure() {
-
 # Setting up coc
-curl -sL install-node.now.sh/lts | bash # TODO must check if Node.js is already installed.
+curl -sL install-node.now.sh/lts | bash
 
 # Setting up YCM
-git submodule update --init --recursive # TODO in /home/$USR/.config/nvim/YouCompleteMe/third_party/ycmd/build.py
+git submodule update --init --recursive # "/home/$USR/.config/nvim/YouCompleteMe/third_party/ycmd/build.py"
 # TODO Must detect latest python version and use it over all others
 [ -e "$DIR"/nvim/YouCompleteMe ] && python3 "$DIR"/nvim/YouCompleteMe/install.py --all # This doesn't seem to work when executed in script
 
@@ -172,12 +175,11 @@ elif [ ! -e "$DIR"/nvim/pack/kite ] ; then
 fi
 }
 
-# Unzip writing files
-# Setting file permissions
-chmod +x build.sh publish.sh #compile.sh
+# Unzip writing files & permissions
+chmod +x build.sh publish.sh
 chmod 775 -R *
 # TODO chown -R $USR *
-# TODO Create a .desktop launcher for Neo DaVimci IDE & Writer and symlink in /usr/bin
+# TODO symlink in /usr/bin
 
 Main "$@" || [[ -z "${!$?}" ]] && print Failed ; exit 1
 exit 0
@@ -195,31 +197,28 @@ npm i coc-ccls # do in root directory of coc.nvim in nvim/autoload/plugged/coc.n
 sudo apt install clangd # Use clangd for linting & coc autocomplete LSP lang server
 # The following goes in coc.nvim config file
 
-#"languageserver": {
-#  "clangd": {
-#    "command": "clangd",
-#    "rootPatterns": ["compile_flags.txt", "compile_commands.json"],
-#    "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"]
-#  }
-#}
-
 # setting up GitHub CLI
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
 sudo apt-add-repository https://cli.github.com/packages
 sudo apt update
 sudo apt install gh
+sudo npm i -g bash-language-server #see README.md for more
 echo "You must run \`gh auth login\`"
 
 # TODO ask to install Terminator and download Mstkj's config files from  GitHub.
 # TODO install zsh ohmyzsh termineter zshdb etc
 git clone https://github.com/ohmyzsh/ohmyzsh.git
 
+# for citation management, I recommend Zotero/Mendeley
+# do you want to install Java jdk, runtime, gradle...?
+# if y; then sudo apt install java-common openjdk-14-jdk openjdk-14-jre gradle
+# use sudo apt install npm nodejs
+
 # TODO ask what development tools you want. Are you programming in shellscript? Java? C++?
 # TODO Do you want to use the retro terminal... just for fun
 # TODO install joplin terminal client
 # TODO Do you want to use rxvt-unicode or terminator
 # TODO: deploy config files via tar and mv to install locations using $PATH<16-02-21, melthsked> #
-
 # TODO needs to create dir /home/$USR/.config/nvim/ before downloading gits
 # TODO must have to  download init.vim from github for script to work properly
 # TODO script causes root user to be owner of nvim directory and sub-directories; must use sudo chown mstkj:mstkj -R nvim
@@ -229,5 +228,5 @@ git clone https://github.com/ohmyzsh/ohmyzsh.git
 # TODO fix "%%20" in font file names after download and replace "%%20" with underscore; this will fix devicons
 # TODO Would you  like to add further terminal functionality? Add from ubuntu-setup.sh
 # TODO Remember to implement rest of script functionality from notes in README.md
-
-# TODO: install xelatex pdf engine for pandoc LaTeX: install as texlive-xetex. <18-02-21, melthsked> #
+# TODO: install xelatex pdf engine for pandoc LaTeX: install as texlive-xetex and wkhtmltopdf. <18-02-21, melthsked> #
+# TODO: Needs serious refactor <23-02-21, melthsked> #

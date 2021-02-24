@@ -18,30 +18,30 @@ hr
 ol.toc li { list-style-type: none; margin: 0; padding: 0; }
 
 @font-face {
-                     font-family: DejaVuSans;
+                     font-family: FantasqueSansMono;
                      font-style: normal;
                      font-weight: normal;
-                     src:url("DejaVuSans-Regular.ttf");
+                     src:url("FantasqueSansMono-Regular.ttf");
                      }
                      @font-face {
-                     font-family: DejaVuSans;
+                     font-family: FantasqueSansMono;
                      font-style: normal;
                      font-weight: bold;
-                     src:url("DejaVuSans-Bold.ttf");
+                     src:url("FantasqueSansMono-Bold.ttf");
                      }
                      @font-face {
-                     font-family: DejaVuSans;
+                     font-family: FantasqueSansMono;
                      font-style: italic;
                      font-weight: normal;
-                     src:url("DejaVuSans-Oblique.ttf");
+                     src:url("FantasqueSansMono-Italic.ttf");
                      }
                      @font-face {
-                     font-family: DejaVuSans;
+                     font-family: FantasqueSansMono;
                      font-style: italic;
                      font-weight: bold;
-                     src:url("DejaVuSans-BoldOblique.ttf");
+                     src:url("FantasqueSansMono-BoldItalic.ttf");
                      }
-                     body { font-family: "DejaVuSans"; }
+                     body { font-family: "FantasqueSansMono"; }
 
 /* kindle friendly css with indents*/p { margin: 0rem 0% 0rem 0rem; text-indent: 1rem; }h1 + p, h2 + p { text-indent: 0em; }h4, h5 {font-size: 100%;}blockquote {
   font-size: 90%;

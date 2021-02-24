@@ -8,7 +8,7 @@
 function Main() {
 	AcquireHome
 	RequestSuperuser
-	InstallDependencies
+	InstallDependencies # if succeeds, then GitClone.
 	GitClone
 	[ -e "$DIR"/nvim/autoload ] && copy
 	[ ! -e "$DIR"/nvim/autoload ] && mkdir "$DIR"/nvim/autoload/ && copy
@@ -47,6 +47,7 @@ function InstallDependencies() {
 		"python3.8"
 		"npm"
 		"js"
+		"ccls"
 	)
 	declare -A packages=(
 		[${tools[0]}]="git"
@@ -61,6 +62,7 @@ function InstallDependencies() {
 		[${tools[9]}]="python3.8"
 		[${tools[10]}]="npm"
 		[${tools[11]}]="nodejs"
+		[${tools[12]}]="ccls" # This has no effect, problem persists
 	)
 	for i in "${tools[@]}"; do
 		[[ ! "$(command -v "${i}" 2> /dev/null)" ]] && sudo apt install "${packages[${i}]}" -y # Could use "hash" command.
@@ -142,43 +144,27 @@ git submodule update --init --recursive # "/home/$USR/.config/nvim/YouCompleteMe
 [ "$(stat /home/"$USR"/.config/nvim/fonts)" != "0" ] && mkdir "$DIR"/nvim/fonts
 # TODO copy fonts to .local/share/fonts and extract in font root folder
 
-# curl is a non-POSIX utility and does NOT come pre-installed on some distributions
 curl -LO https://github.com/belluzj/fantasque-sans/releases/download/v1.8.0/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz -o "$DIR"/nvim/fonts
 curl -LO https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraMono/Regular/complete/Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf -o "$DIR"/nvim/fonts # does not download anything to fonts folder
 #	cp "$DIR"/nvim/fonts/*.otf /home/"$USR"/
-cp "$DIR"/nvim/fonts/*.gz /home/"$USR"/.local/share/fonts/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz && tar -xf "$(find . -name "*.gz")" | head -35 # Tar is a non-POSIX utility
+cp "$DIR"/nvim/fonts/*.gz /home/"$USR"/.local/share/fonts/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz && tar -xf "$(find . -name "*.gz")" | head -35
 # TODO Copy fonts to .local/share/fonts if previous command successful
 
+# Unzip writing files & set permissions
+chmod +x build.sh publish.sh
+chown -R "$USR:$USR" "*"
+chmod 775 -R "*"
+# TODO symlink NeoVim setup in /usr/bin
+
 # Setup kite for all available editors
-if [ -e "$DIR"/nvim/pack/kite ] ; then
+if [ -e "$DIR"/nvim/pack/kite ]; then
 	echo "Kite is already installed, skipping."
-elif [ ! -e "$DIR"/nvim/pack/kite ] ; then
+elif [ ! -e "$DIR"/nvim/pack/kite ]; then
 	exec bash -c "$(wget -q -O - https://linux.kite.com/dls/linux/current)" #"$0" "$*" # This downloads kite
 	# TODO Using "$0" "$*" causes script to crash. Consider writing kite installation to separate script (automated) and executing as normal user. Must clean when main setup script is finished.
+	touch kite-install.sh; echo "" >> kite-install.sh
+	exec sudo -u "$USR" bash kite-install.sh
 fi
-}
-
-# Unzip writing files & permissions
-chmod +x build.sh publish.sh
-chmod 775 -R *
-# TODO chown -R $USR *
-# TODO symlink in /usr/bin
-
-Main "$@" || [[ -z "${!$?}" ]] && print Failed ; exit 1
-exit 0
-
-# ALE not working at all
-# mkdir ycm_build
-# This issue is simply fixed by running install.py in nvim/autoload/plugged/YouCompleteMe/install.py before installing plugin
-
-# ccls is still in pre-release
-sudo apt install ccls # This has no effect, problem persists
-npm i coc-ccls # do in root directory of coc.nvim in nvim/autoload/plugged/coc.nvim
-# coc-ccls: main file ./lib/extension.js not found, you may need to build the project
-
-#:CocInstall coc-clangd
-sudo apt install clangd # Use clangd for linting & coc autocomplete LSP lang server
-# The following goes in coc.nvim config file
 
 # setting up GitHub CLI
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
@@ -188,14 +174,23 @@ sudo apt install gh
 sudo npm i -g bash-language-server #see README.md for more
 echo "You must run \`gh auth login\`"
 
+# coc-ccls: main file ./lib/extension.js not found, you may need to build the project
+npm i coc-ccls # do in root directory of coc.nvim in nvim/autoload/plugged/coc.nvim
 # TODO ask to install Terminator and download Mstkj's config files from  GitHub.
-# TODO install zsh ohmyzsh termineter zshdb etc
+# TODO install zsh ohmyzsh termineter zshdb etc byobu
 git clone https://github.com/ohmyzsh/ohmyzsh.git
+}
+
+Main "$@" || [[ -z "${!$?}" ]] && print Failed ; exit 1
+exit 0
 
 # for citation management, I recommend Zotero/Mendeley
 # do you want to install Java jdk, runtime, gradle...?
 # if y; then sudo apt install java-common openjdk-14-jdk openjdk-14-jre gradle
 # use sudo apt install npm nodejs
+# ALE not working at all
+# mkdir ycm_build
+# This issue is simply fixed by running install.py in nvim/autoload/plugged/YouCompleteMe/install.py before installing plugin
 
 # TODO ask what development tools you want. Are you programming in shellscript? Java? C++?
 # TODO Do you want to use the retro terminal... just for fun

@@ -129,7 +129,7 @@ function copy() {
 
 function Configure() {
 # Setting up coc
-curl -sL install-node.now.sh/lts | bash
+[[ ! "$(command -v node)" ]] && curl -sL install-node.now.sh/lts | bash
 
 # Setting up YCM
 # TODO Must detect latest python version and use it over all others
@@ -141,33 +141,40 @@ elif [[ ! -e "$DIR"/nvim/YouCompleteMe ]]; then
 fi
 
 # Installing fzf
-[ -e "$DIR"/nvim/fzf ] && "$DIR"/nvim/fzf/install
+[[ -e "$DIR"/nvim/fzf ]] && "$DIR"/nvim/fzf/install
 
-# Setup NERD fonts
-[ ! -e /home/"$USR"/.local/share/fonts ] && mkdir /home/"$USR"/.local/share/fonts
-[ "$(stat /home/"$USR"/.config/nvim/fonts)" != "0" ] && mkdir "$DIR"/nvim/fonts
+# Setup fonts
+if [[ ! -e /home/"$USR"/.local/share/fonts ]]; then
+	mkdir "$DIR"/nvim/fonts
+	mkdir /home/"$USR"/.local/share/fonts
+fi
+cp "$DIR"/nvim/fonts/*.gz /home/"$USR"/.local/share/fonts/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz && tar -xf "$(find . -name "*.gz")"
+# TODO: check if font files exist before downloading them <24-02-21, melthsked> #
+
+
+fantasque="https://github.com/belluzj/fantasque-sans/releases/download/v1.8.0/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz"
+[[ ! -e FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz ]] && curl -LO "$fantasque" -o "$DIR"/nvim/fonts
+[[ ! -e Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf ]] && curl -LO https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraMono/Regular/complete/Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf -o "$DIR"/nvim/fonts # does not download anything to fonts folder
+mv Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf Fira_Mono_Regular_Nerd_Font_Complete.otf
+
+# TODO Copy fonts to .local/share/fonts if previous command successful
 # TODO copy fonts to .local/share/fonts and extract in font root folder
 
-curl -LO https://github.com/belluzj/fantasque-sans/releases/download/v1.8.0/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz -o "$DIR"/nvim/fonts
-curl -LO https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraMono/Regular/complete/Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf -o "$DIR"/nvim/fonts # does not download anything to fonts folder
-#	cp "$DIR"/nvim/fonts/*.otf /home/"$USR"/
-cp "$DIR"/nvim/fonts/*.gz /home/"$USR"/.local/share/fonts/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz && tar -xf "$(find . -name "*.gz")" | head -35
-# TODO Copy fonts to .local/share/fonts if previous command successful
-
-# Unzip writing files & set permissions
-chmod +x build.sh publish.sh
+chmod +x build.sh publish.sh # Unzip writing files & set permissions
 chown -R "$USR:$USR" *
-chmod 775 -R *
-# TODO symlink NeoVim setup in /usr/bin
+#chmod 775 -R * # TODO symlink NeoVim setup in /usr/bin
 
 # setting up GitHub CLI
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
-sudo apt-add-repository https://cli.github.com/packages
-sudo apt update
-sudo apt install gh
-sudo npm i -g bash-language-server # see README.md for more
-echo "You must run \`gh auth login\`"
+if [[ ! "$(command -v gh)" ]]; then
+	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+	sudo apt-add-repository https://cli.github.com/packages
+	sudo apt update && sudo apt install gh
+	echo "You must run \`gh auth login\`"
+else
+	exit 1
+fi
 
+sudo npm i -g bash-language-server # see README.md for more
 # coc-ccls: main file ./lib/extension.js not found, you may need to build the project
 npm i coc-ccls # do in root directory of coc.nvim in nvim/autoload/plugged/coc.nvim
 # TODO ask to install Terminator and download Mstkj's config files from  GitHub.

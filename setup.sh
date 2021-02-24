@@ -140,7 +140,7 @@ git submodule update --init --recursive # "/home/$USR/.config/nvim/YouCompleteMe
 [ -e "$DIR"/nvim/fzf ] && "$DIR"/nvim/fzf/install
 
 # Setup NERD fonts
-[ ! -e /home/"$USR"/.local/share/fonts ] && mkdir "$HOME"/.local/share/fonts
+[ ! -e /home/"$USR"/.local/share/fonts ] && mkdir /home/"$USR"/.local/share/fonts
 [ "$(stat /home/"$USR"/.config/nvim/fonts)" != "0" ] && mkdir "$DIR"/nvim/fonts
 # TODO copy fonts to .local/share/fonts and extract in font root folder
 
@@ -152,19 +152,9 @@ cp "$DIR"/nvim/fonts/*.gz /home/"$USR"/.local/share/fonts/FantasqueSansMono-Larg
 
 # Unzip writing files & set permissions
 chmod +x build.sh publish.sh
-chown -R "$USR:$USR" "*"
-chmod 775 -R "*"
+chown -R "$USR:$USR" '*'
+chmod 775 -R '*'
 # TODO symlink NeoVim setup in /usr/bin
-
-# Setup kite for all available editors
-if [ -e "$DIR"/nvim/pack/kite ]; then
-	echo "Kite is already installed, skipping."
-elif [ ! -e "$DIR"/nvim/pack/kite ]; then
-	exec bash -c "$(wget -q -O - https://linux.kite.com/dls/linux/current)" #"$0" "$*" # This downloads kite
-	# TODO Using "$0" "$*" causes script to crash. Consider writing kite installation to separate script (automated) and executing as normal user. Must clean when main setup script is finished.
-	touch kite-install.sh; echo "" >> kite-install.sh
-	exec sudo -u "$USR" bash kite-install.sh
-fi
 
 # setting up GitHub CLI
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
@@ -179,9 +169,21 @@ npm i coc-ccls # do in root directory of coc.nvim in nvim/autoload/plugged/coc.n
 # TODO ask to install Terminator and download Mstkj's config files from  GitHub.
 # TODO install zsh ohmyzsh termineter zshdb etc byobu
 git clone https://github.com/ohmyzsh/ohmyzsh.git
+
+while true; do # Setup kite for all available editors
+	if [[ ! -e "$DIR"/nvim/pack/kite ]]; then
+		#touch kite-install.sh; echo "" >> kite-install.sh
+		#sudo -u "$USR" bash kite-install.sh
+		sudo -u "$USR" bash -c "$(wget -q -O - https://linux.kite.com/dls/linux/current)" "$0" "$*" # This downloads kite
+		# removed 'exec'
+		# TODO Using "$0" "$*" causes script to crash. Consider writing kite installation to separate script (automated) and executing as normal user. Must clean when main setup script is finished.
+	elif [ -e "$DIR"/nvim/pack/kite ]; then
+		echo "Kite is already installed, skipping."
+	fi
+done
 }
 
-Main "$@" || [[ -z "${!$?}" ]] && print Failed ; exit 1
+Main "$@" || [[ -z "${!$?}" ]] && printf "Failed, exiting..." ; exit 1
 exit 0
 
 # for citation management, I recommend Zotero/Mendeley

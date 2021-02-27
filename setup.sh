@@ -5,8 +5,10 @@
 # Should be automated, portable (Debian, OSX, Arch) and narrowly POSIX-compliant.
 # Make script find user home and neovim installation location on drive and store as variable
 
-function Main() { AcquireHome
-	RequestSuperuser && InstallDependencies # if succeeds, then GitClone.
+function Main() {
+	AcquireHome
+	RequestSuperuser
+	InstallDependencies # if succeeds, then GitClone.
 	if [[ "$(command -v nvim)" ]] && [[ -e "$DIR/nvim" ]]; then
 		GitClone
 	fi

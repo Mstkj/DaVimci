@@ -19,3 +19,7 @@ clean:
 	# bash -x clean
 	# remove node_modules and ohmyzsh
 	# remove package-lock.json
+	# rm LICENSE.txt
+	# rm CHANGELOG.md
+	# rm -rf OTF
+	# rm -rf TTF

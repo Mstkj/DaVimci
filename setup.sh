@@ -10,7 +10,7 @@ function Main() { AcquireHome
 	if [[ "$(command -v nvim)" ]] && [[ -e "$DIR/nvim" ]]; then
 		GitClone
 	fi
-	[[ ! -e "$DIR"/nvim/autoload ]] && mkdir "$DIR"/nvim/autoload/ && copy
+	[[ ! -e "$DIR"/nvim/autoload ]] && mkdir "$DIR"/nvim/autoload/ && CopyPlugins
 	[[ -e "$DIR"/nvim/autoload ]] && CopyPlugins
 	Configure "$@"
 	#sudo chown "$USR" -R "$DIR"/nvim # this is not working for some reason
@@ -71,39 +71,40 @@ function InstallDependencies() {
 
 function GitClone() { # Test if folders in section 2 exist
 	# TODO: Will have to use an array for git links and for directories. Use for loop for testing and installing <23-02-21, melthsked> #
-	[ -e "$DIR"/nvim/vim-devicons ] || sudo git clone https://github.com/ryanoasis/vim-devicons "$DIR"/nvim/vim-devicons
-	[ -e "$DIR"/nvim/vista ] || sudo git clone https://github.com/liuchengxu/vista.vim.git "$DIR"/nvim/vista
-	[ -e "$DIR"/nvim/vim-polyglot ] || sudo git clone https://github.com/sheerun/vim-polyglot.git "$DIR"/nvim/vim-polyglot
-	[ -e "$DIR"/nvim/vim-plug ] || sudo git clone https://github.com/junegunn/vim-plug.git "$DIR"/nvim/vim-plug
-	[ -e "$DIR"/nvim/vim-airline ] || sudo git clone https://github.com/vim-airline/vim-airline.git "$DIR"/nvim/vim-airline
-	[ -e "$DIR"/nvim/vim-snippets ] || sudo git clone https://github.com/honza/vim-snippets.git "$DIR"/nvim/vim-snippets
-	[ -e "$DIR"/nvim/vim-YouCompleteMe ] || sudo git clone https://github.com/ycm-core/YouCompleteMe.git "$DIR"/nvim/YouCompleteMe
-	[ -e "$DIR"/nvim/syntastic ] || sudo git clone https://github.com/vim-syntastic/syntastic.git "$DIR"/nvim/syntastic
-	[ -e "$DIR"/nvim/vim-fugitive ] || sudo git clone https://github.com/tpope/vim-fugitive.git "$DIR"/nvim/vim-fugitive
-	[ -e "$DIR"/nvim/vim-airline-themes ] || sudo git clone https://github.com/vim-airline/vim-airline-themes.git "$DIR"/nvim/vim-airline-themes
-	[ -e "$DIR"/nvim/goyo.vim ] || sudo git clone https://github.com/junegunn/goyo.vim.git "$DIR"/nvim/goyo.vim
-	[ -e "$DIR"/nvim/vimspector ] || sudo git clone https://github.com/puremourning/vimspector.git "$DIR"/nvim/vimspector
-	[ -e "$DIR"/nvim/ale ] || sudo git clone https://github.com/dense-analysis/ale.git "$DIR"/nvim/ale
-	[ -e "$DIR"/nvim/nerdtree ] || sudo git clone https://github.com/preservim/nerdtree.git "$DIR"/nvim/nerdtree
-	[ -e "$DIR"/nvim/gruvbox ] || sudo git clone https://github.com/morhetz/gruvbox.git "$DIR"/nvim/gruvbox
-	[ -e "$DIR"/nvim/coc-snippets ] || sudo git clone https://github.com/neoclide/coc-snippets.git "$DIR"/nvim/coc-snippets
-	[ -e "$DIR"/nvim/limelight ] || sudo git clone https://github.com/junegunn/limelight.vim.git "$DIR"/nvim/limelight
-	[ -e "$DIR"/nvim/fzf ] || sudo git clone https://github.com/junegunn/fzf.git "$DIR"/nvim/fzf
-	[ -e "$DIR"/nvim/fzf.vim ] || sudo git clone https://github.com/junegunn/fzf.vim.git "$DIR"/nvim/fzf.vim
-	[ -e "$DIR"/nvim/tagbar ] || sudo git clone https://github.com/majutsushi/tagbar.git "$DIR"/nvim/tagbar
-	[ -e "$DIR"/nvim/vim-pythonsense ] || sudo git clone https://github.com/jeetsukumaran/vim-pythonsense.git "$DIR"/nvim/vim-pythonsense
-	[ -e "$DIR"/nvim/auto-pairs ] || sudo git clone https://github.com/jiangmiao/auto-pairs.git "$DIR"/nvim/auto-pairs
-	[ -e "$DIR"/nvim/coc.vim ] || sudo git clone https://github.com/neoclide/coc.nvim.git "$DIR"/nvim/coc.vim
-	[ -e "$DIR"/nvim/coc-java ] || sudo git clone https://github.com/neoclide/coc-java.git "$DIR"/nvim/coc-java
-	[ -e "$DIR"/nvim/coc-python ] || sudo git clone https://github.com/neoclide/coc-python.git "$DIR"/nvim/coc-python
-	[ -e "$DIR"/nvim/neomake ] || sudo git clone https://github.com/neomake/neomake.git "$DIR"/nvim/neomake
+	[[ ! -e "$DIR"/nvim/vim-devicons ]] && git clone https://github.com/ryanoasis/vim-devicons "$DIR"/nvim/vim-devicons
+	[[ ! -e "$DIR"/nvim/vista ]] && git clone https://github.com/liuchengxu/vista.vim.git "$DIR"/nvim/vista
+	[[ ! -e "$DIR"/nvim/vim-polyglot ]] && git clone https://github.com/sheerun/vim-polyglot.git "$DIR"/nvim/vim-polyglot
+	[[ ! -e "$DIR"/nvim/vim-plug ]] && git clone https://github.com/junegunn/vim-plug.git "$DIR"/nvim/vim-plug
+	[[ ! -e "$DIR"/nvim/vim-airline ]] && git clone https://github.com/vim-airline/vim-airline.git "$DIR"/nvim/vim-airline
+	[[ ! -e "$DIR"/nvim/vim-snippets ]] && git clone https://github.com/honza/vim-snippets.git "$DIR"/nvim/vim-snippets
+#	[ -e "$DIR"/nvim/vim-YouCompleteMe ] || sudo git clone https://github.com/ycm-core/YouCompleteMe.git "$DIR"/nvim/YouCompleteMe
+	[[ ! -e "$DIR"/nvim/syntastic ]] && git clone https://github.com/vim-syntastic/syntastic.git "$DIR"/nvim/syntastic
+	[[ ! -e "$DIR"/nvim/vim-fugitive ]] && git clone https://github.com/tpope/vim-fugitive.git "$DIR"/nvim/vim-fugitive
+	[[ ! -e "$DIR"/nvim/vim-airline-themes ]] && git clone https://github.com/vim-airline/vim-airline-themes.git "$DIR"/nvim/vim-airline-themes
+	[[ ! -e "$DIR"/nvim/goyo.vim ]] && git clone https://github.com/junegunn/goyo.vim.git "$DIR"/nvim/goyo.vim
+	[[ ! -e "$DIR"/nvim/vimspector ]] && git clone https://github.com/puremourning/vimspector.git "$DIR"/nvim/vimspector
+	[[ ! -e "$DIR"/nvim/ale ]] && git clone https://github.com/dense-analysis/ale.git "$DIR"/nvim/ale
+	[[ ! -e "$DIR"/nvim/nerdtree ]] && git clone https://github.com/preservim/nerdtree.git "$DIR"/nvim/nerdtree
+	[[ ! -e "$DIR"/nvim/gruvbox ]] && git clone https://github.com/morhetz/gruvbox.git "$DIR"/nvim/gruvbox
+	[[ ! -e "$DIR"/nvim/coc-snippets ]] && git clone https://github.com/neoclide/coc-snippets.git "$DIR"/nvim/coc-snippets
+	[[ ! -e "$DIR"/nvim/limelight ]] && git clone https://github.com/junegunn/limelight.vim.git "$DIR"/nvim/limelight
+	[[ ! -e "$DIR"/nvim/fzf ]] && git clone https://github.com/junegunn/fzf.git "$DIR"/nvim/fzf
+	[[ ! -e "$DIR"/nvim/fzf.vim ]] && git clone https://github.com/junegunn/fzf.vim.git "$DIR"/nvim/fzf.vim
+	[[ ! -e "$DIR"/nvim/tagbar ]] && git clone https://github.com/majutsushi/tagbar.git "$DIR"/nvim/tagbar
+	[[ ! -e "$DIR"/nvim/vim-pythonsense ]] && git clone https://github.com/jeetsukumaran/vim-pythonsense.git "$DIR"/nvim/vim-pythonsense
+	[[ ! -e "$DIR"/nvim/auto-pairs ]] && git clone https://github.com/jiangmiao/auto-pairs.git "$DIR"/nvim/auto-pairs
+	[[ ! -e "$DIR"/nvim/coc.vim ]] && git clone https://github.com/neoclide/coc.nvim.git "$DIR"/nvim/coc.vim
+	[[ ! -e "$DIR"/nvim/coc-java ]] && git clone https://github.com/neoclide/coc-java.git "$DIR"/nvim/coc-java
+	[[ ! -e "$DIR"/nvim/coc-python ]] && git clone https://github.com/neoclide/coc-python.git "$DIR"/nvim/coc-python
+	[[ ! -e "$DIR"/nvim/neomake ]] && git clone https://github.com/neomake/neomake.git "$DIR"/nvim/neomake
+	[[ ! -e "$DIR"/nvim/ ]] && git clone https://github.com/mhinz/vim-signify.git "$DIR"/nvim/vim-signify # may need to tweak CopyPlugins for this.
 }
 
 function CopyPlugins() {
 	cp "$DIR"/nvim/vim-plug/plug.vim "$DIR"/nvim/autoload/plug.vim
 	cp "$DIR"/nvim/vim-airline/plugin/airline.vim "$DIR"/nvim/autoload/vim-airline.vim
 	cp "$DIR"/nvim/vim-snippets/plugin/vimsnippets.vim "$DIR"/nvim/autoload/vimsnippets.vim
- 	cp "$DIR"/nvim/YouCompleteMe/autoload/youcompleteme.vim "$DIR"/nvim/autoload/youcompleteme.vim
+# 	cp "$DIR"/nvim/YouCompleteMe/autoload/youcompleteme.vim "$DIR"/nvim/autoload/youcompleteme.vim
 	cp "$DIR"/nvim/syntastic/plugin/syntastic.vim "$DIR"/nvim/autoload/syntastic.vim
 	cp "$DIR"/nvim/vim-fugitive/autoload/fugitive.vim "$DIR"/nvim/autoload/fugitive.vim
 	cp "$DIR"/nvim/vim-airline-themes/plugin/airline-themes.vim "$DIR"/nvim/autoload/airline-themes.vim
@@ -114,16 +115,16 @@ function CopyPlugins() {
 	cp "$DIR"/nvim/vim-devicons/plugin/webdevicons.vim "$DIR"/nvim/autoload/webdevicons.vim
 	cp "$DIR"/nvim/gruvbox/autoload/airline/themes/gruvbox.vim "$DIR"/nvim/autoload/gruvbox.vim
 	cp "$DIR"/nvim/coc-snippets/ftplugin/snippets.vim "$DIR"/nvim/autoload/snippets.vim
-	cp "$DIR"/nvim/limelight.vim/plugin/limelight.vim "$DIR"/nvim/autoload/limelight.vim
-	cp "$DIR"/nvim/vim-polyglot/plugin/sleuth.vim "$DIR"/nvim/autoload/sleuth.vim
-	cp "$DIR"/nvim/vista.vim/plugin/vista.vim "$DIR"/nvim/autoload/vista.vim
+	cp "$DIR"/nvim/limelight/autoload/limelight.vim "$DIR"/nvim/autoload/limelight.vim
+	cp "$DIR"/nvim/vim-polyglot/plugin/polyglot.vim "$DIR"/nvim/autoload/sleuth.vim
+	cp "$DIR"/nvim/vista/plugin/vista.vim "$DIR"/nvim/autoload/vista.vim
 	cp "$DIR"/nvim/fzf/plugin/fzf.vim "$DIR"/nvim/autoload/fzf.vim
 	cp "$DIR"/nvim/fzf.vim/autoload/fzf/vim.vim "$DIR"/nvim/autoload/vim.vim
 	cp "$DIR"/nvim/tagbar/autoload/tagbar.vim "$DIR"/nvim/autoload/tagbar.vim
-	cp "$DIR"/nvim/vim-pythonsense/after/ftplugin/python/pythonsense.vim "$DIR"/nvim/autoload/vim-pythonsense/after/ftplugin/python/pythonsense.vim
+	cp "$DIR"/nvim/vim-pythonsense/autoload/pythonsense.vim "$DIR"/nvim/autoload/vim-pythonsense/after/ftplugin/python/pythonsense.vim
 	cp "$DIR"/nvim/vim-pythonsense/autoload/pythonsense.vim "$DIR"/nvim/autoload/pythonsense.vim
 	cp "$DIR"/nvim/auto-pairs/plugin/auto-pairs.vim "$DIR"/nvim/autoload/auto-pairs.vim
-	cp "$DIR"/nvim/coc.nvim/autoload/coc.vim "$DIR"/nvim/autoload/coc.vim
+	cp "$DIR"/nvim/coc.vim/autoload/coc.vim "$DIR"/nvim/autoload/coc.vim
 	cp "$DIR"/nvim/neomake/autoload/neomake.vim "$DIR"/nvim/autoload/neomake.vim
 }
 
@@ -132,12 +133,12 @@ function Configure() {
 [[ ! "$(command -v node)" ]] && curl -sL install-node.now.sh/lts | bash
 
 # Setting up YCM
-if [[ -e "$DIR"/nvim/YouCompleteMe/ ]]; then
-	git submodule update --init --recursive # "/home/$USR/.config/nvim/YouCompleteMe/third_party/ycmd/build.py"
-	python3 "$DIR"/nvim/YouCompleteMe/install.py --all # This doesn't seem to work when executed in script
-elif [[ ! -e "$DIR"/nvim/YouCompleteMe ]]; then
-	printf "YCM failed\n"; exit 1
-fi
+#if [[ -e "$DIR"/nvim/YouCompleteMe/ ]]; then
+#	git submodule update --init --recursive # "/home/$USR/.config/nvim/YouCompleteMe/third_party/ycmd/build.py"
+#	python3 "$DIR"/nvim/YouCompleteMe/install.py --all # This doesn't seem to work when executed in script
+#elif [[ ! -e "$DIR"/nvim/YouCompleteMe ]]; then
+#	printf "YCM failed\n"; return 1
+#fi
 
 # Installing fzf
 [[ -e "$DIR"/nvim/fzf ]] && "$DIR"/nvim/fzf/install
@@ -147,17 +148,21 @@ if [[ ! -e /home/"$USR"/.local/share/fonts ]]; then
 	mkdir "$DIR"/nvim/fonts
 	mkdir /home/"$USR"/.local/share/fonts
 fi
-cp "$DIR"/nvim/fonts/*.gz /home/"$USR"/.local/share/fonts/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz && tar -xf "$(find . -name "*.gz")"
-# TODO: check if font files exist before downloading them <24-02-21, melthsked> #
 
 fantasque="https://github.com/belluzj/fantasque-sans/releases/download/v1.8.0/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz"
 [[ ! -e FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz ]] && curl -LO "$fantasque" #-o "$DIR"/nvim/fonts
+[[ ! -e "$DIR"/nvim/fonts ]] && mkdir "$DIR/nvim/fonts"
+
+[[ -e $(find . -name "*.gz") ]] && mv FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz "$DIR"/nvim/fonts/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz; tar -xf "$DIR"/nvim/fonts/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz
+
+#cp /home/"$USR"/.local/share/fonts/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz "$DIR"/nvim/fonts/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz
 [[ ! -e Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf ]] && curl -LO https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraMono/Regular/complete/Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf #-o "$DIR"/nvim/fonts # does not download anything to fonts folder
-[[ -e "Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf" ]] && mv Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf "$DIR"/.local/fonts/Fira_Mono_Regular_Nerd_Font_Complete.otf
+[[ -e "Fira%20Mono%20Regular%20Nerd%20Font%20Complete.ttf" ]] && mv Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf /home/"$DIR"/.local/fonts/Fira_Mono_Regular_Nerd_Font_Complete.otf
 
 chmod +x build.sh publish.sh # Unzip writing files & set permissions
-chown -R "$USR:$USR" *
+chown -R "$USR:$USR" * # TODO: Is this happening in the correct directory? <26-02-21, melthsked> #
 
+# TODO: Figure out why this tries to reinstall anyway <27-02-21, melthsked> #
 [[ ! "$(command -v bash-language-server)" ]] && sudo npm i -g bash-language-server # see README.md for more
 # coc-ccls: main file ./lib/extension.js not found, you may need to build the project
 
@@ -169,7 +174,7 @@ npm i coc-ccls # do in root directory of coc.nvim in nvim/autoload/plugged/coc.n
 # TODO install zsh ohmyzsh termineter zshdb byobu etc
 # TODO symlink NeoVim setup in /usr/bin
 
-[[ ! -e "$DIR"/ohmyzsh/ ]] && git clone https://github.com/ohmyzsh/ohmyzsh.git "$DIR"/ohmyzsh
+[[ ! -e /home/"$USR"/.oh-my-zsh/ ]] && git clone https://github.com/ohmyzsh/ohmyzsh.git /home/"$USR"/.oh-my-zsh
 # setup ohmyzsh
 
 # setting up GitHub CLI
@@ -179,25 +184,20 @@ if [[ ! "$(command -v gh)" ]]; then
 	sudo apt update && sudo apt install gh
 	echo "You must run \`gh auth login\`"
 elif [[ "$(command -v gh)" ]]; then
-	printf "gh already installed\n" # TODO: Call another function <24-02-21, melthsked> #
-	CheckInstallKite "$@"
+	printf "gh already installed\n" && CheckInstallKite "$@" # TODO: Call function <24-02-21, melthsked> #
 	return 0
 else
-	printf "gh failed\n"
-	return 1
+	printf "gh failed\n"; return 1
 fi
 }
 
 function CheckInstallKite() {
 while true; do # Setup kite for all available editors
 	if [[ ! -e "$DIR"/nvim/pack/kite ]]; then
-		#touch kite-install.sh; echo "" >> kite-install.sh
-		#sudo -u "$USR" bash kite-install.sh
 		sudo -u "$USR" bash -c "$(wget -q -O - https://linux.kite.com/dls/linux/current)" "$0" "$*" # This downloads kite
-		# removed 'exec'
 		# TODO Using "$0" "$*" causes script to crash. Consider writing kite installation to separate script (automated) and executing as normal user. Must clean when main setup script is finished.
-	elif [ -e "$DIR"/nvim/pack/kite ]; then
-		echo "Kite is already installed, skipping."
+	elif [[ -e "$DIR"/nvim/pack/kite ]]; then
+		echo "Kite is already installed, skipping."; return 0
 	fi
 done
 }

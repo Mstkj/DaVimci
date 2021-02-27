@@ -2,12 +2,10 @@
 build:
 	bash build.sh
 
-
 compile:
 	pandoc -D latex > template.tex
-#	pandoc -D revealjs > template.js
 	pandoc -D html5 > template.html
-#	bash compile.sh
+	#	bash compile.sh
 
 publish:
 	bash publish.sh
@@ -18,3 +16,6 @@ install:
 
 clean:
 	rm -rf tex2pdf.* ; rm debug.log ; rm template.tex ; rm template.js ; rm template.html
+	# bash -x clean
+	# remove node_modules and ohmyzsh
+	# remove package-lock.json

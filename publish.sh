@@ -2,7 +2,7 @@
 
 function Main() {
 clear
-PS3="Enter input format:~$ "
+PS3="Input format:~$ "
 options=(Docx PDF Markdown LaTeX HTML5)
 select menu in "${options[@]}"
 do
@@ -29,7 +29,8 @@ done
 function SearchInput() {
 while true
 do # test MIME type of file and match with extension to determine $inp.
-	com="$(find . -maxdepth 1 -type f -print -iname "*.$ext")" # removed "grep ".$ext | head -15" removed "$PWD" before -maxdepth
+	com="$(find . -maxdepth 1 -type f -print -iname "*.$ext" | grep ".$ext")" # removed "$PWD" before -maxdepth
+# TODO: Use awk and sed to remove './' from results <25-02-21, melthsked> #
 	printf "\n%s$com\n"; read -rp "File Name:~$ " inp
 	INPUT="$inp.$ext"
 	printf "\n%s$INPUT\n"
@@ -39,8 +40,8 @@ done
 }
 
 function SearchOutput() {
-printf "Enter document title:~$ "; read -rp "" name
-PS3="Enter output format:~$ "
+printf "Output title:~$ "; read -rp "" name
+PS3="Output format:~$ "
 options=(Docx Markdown LaTeX HTML5 ePub)
 select menu in "${options[@]}"
 do
@@ -60,7 +61,7 @@ do
 
 	elif [[ "$REPLY" = "4" ]]; then # HTML5
 
-		# TODO: Program keeps looping back here after execution. <23-02-21, melthsked> #
+		# TODO: Stupid program keeps looping back here after execution. <23-02-21, melthsked> #
 		OutputFormat="${options[3],,}"
 		PS3="Webpage or PDF:~$ "; options2=(Webpage PDF)
 		select menu2 in "${options2[@]}"; do
@@ -122,6 +123,7 @@ function StyleCSS() {
 
 function Metadata() {
 # TODO: WARNING: program will break if you don't use metadata.xml <23-02-21, melthsked> #
+# TODO: For now, just set metadata automatically. <25-02-21, melthsked> #
 printf "Use metadata.xml? "; read -rp " [Y/n] " res
 case "$res" in
 [yY][eE][sS]|[yY])
@@ -137,11 +139,11 @@ esac
 
 function ArticleClass() {
 	class="document-class=article"; printf "\n%s$class\n"; PaperSize
-	# Currently, article is only available class.
+	# or class=report
 }
 
 function PaperSize() {
-	papersize="papersize=A4"; PandocOutputCommand # Currently, A4 is only option.
+	papersize="papersize=A4"; PandocOutputCommand # or A5
 }
 
 function InvalidResponse() {
@@ -153,9 +155,12 @@ function PandocOutputCommand() {
 [[ ! "$defaults" = "defaults.yaml" ]] && pandoc -f "$in" -t "$OutputFormat" "$INPUT" "$engine" "$template" "$css" "$metadata" --highlight-style=monochrome -V "$class" -V "$papersize" --pdf-engine-opt=--enable-local-file-access --indented-code-classes=javascript --verbose --strip-comments --standalone --log=debug.log --data-dir=./ -o "${FinalOutput}"
 }
 
-Main || [[ -z "${!$?}" ]] && print Failed ; exit 1
-exit 0
+Main || [[ -z "${!$?}" ]] && print Failed ; return 1
+return 0
 
+# TODO: function for margins choices: default is '-V geometry:margin=1in' <26-02-21, melthsked> #
+# TODO: function for table of contents <26-02-21, melthsked> #
+# TODO: highlight style other than monochrome <26-02-21, melthsked> #
 # TODO: opt-in csl and selecting format if so. <16-02-21, melthsked> #
 # TODO: Bibliography references.bib function goes here <16-02-21, melthsked> #
 # TODO: function for choosing cover.jpg <16-02-21, melthsked> #
@@ -166,6 +171,4 @@ exit 0
 # TODO: Highlight styling <18-02-21, melthsked> #
 
 # DEBUG
-# TODO: Why tf does it loop back to SearchOutput?!?! <21-02-21, melthsked> #
-# To create a pdf using pandoc, use -t latex|html5
-# and specify an output file with .pdf extension (-o filename.pdf).
+# TODO: Why tf does it loop back to the middle of _mx_?!?! <21-02-21, melthsked> #

@@ -1,13 +1,14 @@
 ---
-title: I am the Title
-subtitle: I am the subtitle
+title: "I am the Title"
+subtitle: "I am the subtitle"
 lang: en-US
-geometry: margin=1in
+geometry: margin=1in # Can also use cm
 indent: true
 numbersections: true
 fontfamily: qbookman
 toc: true
-date: September 9, 2020
+published: true
+date: September 9, 2020 # OR \today
 keywords: [Education, Writing, Computer Science]
 subject: Education
 category: Education
@@ -22,9 +23,18 @@ header-includes: |
     \usepackage{authblk}
     \author[1]{Name Initial Last_Name \thanks{nothing@gmail.com}}
     \affil[1]{University of Somewhere}
+thanks: name@email.com
 output:
     papaja::Degree Roadmap.pdf:
         citation_package: biblatex
 zotero: # calls zotero, must be currently running
-    csl-style: apa
+    csl-style: apa # mla OR apa
 ---
+
+#yaml  must be in the document header if using html and written in html syntax
+#example:
+    #abstract: |
+    #<p>I am an abstract.</p>
+# Should be written at top of document in non-LaTeX syntax if using wkhtmltopdf
+# If using wkhtmltopdf, then place YAML header at top of document
+# whether your header uses latex or html syntax depends on what engine is preparing your documents

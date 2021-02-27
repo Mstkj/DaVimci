@@ -99,14 +99,14 @@ Press `Ins` while in INSERT mode to switch to REPLACE mode and vice versa
 `zc` enables code folding
 `:Limelight` to turn on distraction-free writing & `:Limelight!` to deactivate
 Install coc after running `:PlugInstall` with `:CocInstall`
-Then, you can install extensions with `:CocInstall coc-snippets coc-python coc-java coc-vimlsp coc-clangd coc-html coc-css coc-sh`
+Then, you can install extensions with `:CocInstall coc-snippets coc-python coc-java coc-vimlsp coc-clangd coc-html coc-css coc-sh coc-pairs coc-git`
 `gd` goto definition when cursor over text
 `zc` in VISUAL mode folds the code to hide distracting lines and `zo` to open
 In NORMAL mode, `Shift+Q` enters Vim into Ex mode
 vim-lexical
 `Shift+[` and `Shift+]` navigate up and down the document by block
 `Shift+K` opens the definition of anything highlighted by the cursor
-For anything undocumented by your virtual tutor, you can type `:help` followed by the name of any vim plugin
+For anything undocumented by your virtual tutor, you can type `:help` followed by the name of any vim plugin or function.
 To enable the compose key for UNIX systems, enter `sudo dpkg-reconfigure keyboard-configuration` and `KBDOPTIONS=Compose:ralt` in `/etc/default/keyboard` to enable typing in multiple languages
 Type `:PlugInstall` to install your plugins
 change your keyboard autorepeat rate with `sudo kbdrate`
@@ -127,7 +127,7 @@ All of your files must be in the working directory
 Edit all of your files to make sure the publication suits your needs
 learn to add custom templates to pandoc
 
-the following goes in init.vim
-let g:LanguageClient_serverCommands = {
-    \ 'sh': ['bash-language-server', 'start']
-    \ }
+If using wkhtmltopdf, pandoc will rasterize PDFs if using TTF.
+When using HTML5 markdown, use HTML5 tags such as `<title>$title$</title>` if using pandoc template. Write manually if without template.
+
+</template>

@@ -5,15 +5,15 @@
 # Should be automated, portable (Debian, OSX, Arch) and narrowly POSIX-compliant.
 # Make script find user home and neovim installation location on drive and store as variable
 
-function Main() {
-	AcquireHome
-	RequestSuperuser
-	InstallDependencies # if succeeds, then GitClone.
-	GitClone
-	[ -e "$DIR"/nvim/autoload ] && copy
-	[ ! -e "$DIR"/nvim/autoload ] && mkdir "$DIR"/nvim/autoload/ && copy
-	Configure
-	sudo chown "$USR" -R "$DIR"/nvim # this is not working for some reason
+function Main() { AcquireHome
+	RequestSuperuser && InstallDependencies # if succeeds, then GitClone.
+	if [[ "$(command -v nvim)" ]] && [[ -e "$DIR/nvim" ]]; then
+		GitClone
+	fi
+	[[ ! -e "$DIR"/nvim/autoload ]] && mkdir "$DIR"/nvim/autoload/ && copy
+	[[ -e "$DIR"/nvim/autoload ]] && CopyPlugins
+	Configure "$@"
+	#sudo chown "$USR" -R "$DIR"/nvim # this is not working for some reason
 	# uname -a to test for distributions
 	# echo $0 to test for shell
 	# use find command
@@ -99,7 +99,7 @@ function GitClone() { # Test if folders in section 2 exist
 	[ -e "$DIR"/nvim/neomake ] || sudo git clone https://github.com/neomake/neomake.git "$DIR"/nvim/neomake
 }
 
-function copy() {
+function CopyPlugins() {
 	cp "$DIR"/nvim/vim-plug/plug.vim "$DIR"/nvim/autoload/plug.vim
 	cp "$DIR"/nvim/vim-airline/plugin/airline.vim "$DIR"/nvim/autoload/vim-airline.vim
 	cp "$DIR"/nvim/vim-snippets/plugin/vimsnippets.vim "$DIR"/nvim/autoload/vimsnippets.vim
@@ -132,12 +132,11 @@ function Configure() {
 [[ ! "$(command -v node)" ]] && curl -sL install-node.now.sh/lts | bash
 
 # Setting up YCM
-# TODO Must detect latest python version and use it over all others
 if [[ -e "$DIR"/nvim/YouCompleteMe/ ]]; then
 	git submodule update --init --recursive # "/home/$USR/.config/nvim/YouCompleteMe/third_party/ycmd/build.py"
 	python3 "$DIR"/nvim/YouCompleteMe/install.py --all # This doesn't seem to work when executed in script
 elif [[ ! -e "$DIR"/nvim/YouCompleteMe ]]; then
-	exit 1
+	printf "YCM failed\n"; exit 1
 fi
 
 # Installing fzf
@@ -151,18 +150,27 @@ fi
 cp "$DIR"/nvim/fonts/*.gz /home/"$USR"/.local/share/fonts/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz && tar -xf "$(find . -name "*.gz")"
 # TODO: check if font files exist before downloading them <24-02-21, melthsked> #
 
-
 fantasque="https://github.com/belluzj/fantasque-sans/releases/download/v1.8.0/FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz"
-[[ ! -e FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz ]] && curl -LO "$fantasque" -o "$DIR"/nvim/fonts
-[[ ! -e Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf ]] && curl -LO https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraMono/Regular/complete/Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf -o "$DIR"/nvim/fonts # does not download anything to fonts folder
-mv Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf Fira_Mono_Regular_Nerd_Font_Complete.otf
-
-# TODO Copy fonts to .local/share/fonts if previous command successful
-# TODO copy fonts to .local/share/fonts and extract in font root folder
+[[ ! -e FantasqueSansMono-LargeLineHeight-NoLoopK.tar.gz ]] && curl -LO "$fantasque" #-o "$DIR"/nvim/fonts
+[[ ! -e Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf ]] && curl -LO https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraMono/Regular/complete/Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf #-o "$DIR"/nvim/fonts # does not download anything to fonts folder
+[[ -e "Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf" ]] && mv Fira%20Mono%20Regular%20Nerd%20Font%20Complete.otf "$DIR"/.local/fonts/Fira_Mono_Regular_Nerd_Font_Complete.otf
 
 chmod +x build.sh publish.sh # Unzip writing files & set permissions
 chown -R "$USR:$USR" *
-#chmod 775 -R * # TODO symlink NeoVim setup in /usr/bin
+
+[[ ! "$(command -v bash-language-server)" ]] && sudo npm i -g bash-language-server # see README.md for more
+# coc-ccls: main file ./lib/extension.js not found, you may need to build the project
+
+# # TODO: If coc-ccls doesn't exist, then install via npm <24-02-21, melthsked> #
+npm i coc-ccls # do in root directory of coc.nvim in nvim/autoload/plugged/coc.nvim
+# TODO ask to install Terminator and download Mstkj's config files from  GitHub.
+# get my vim.init via 'curl -LO'
+# download my scripts and config files from github via curl, zshrc and init.vim.
+# TODO install zsh ohmyzsh termineter zshdb byobu etc
+# TODO symlink NeoVim setup in /usr/bin
+
+[[ ! -e "$DIR"/ohmyzsh/ ]] && git clone https://github.com/ohmyzsh/ohmyzsh.git "$DIR"/ohmyzsh
+# setup ohmyzsh
 
 # setting up GitHub CLI
 if [[ ! "$(command -v gh)" ]]; then
@@ -170,17 +178,17 @@ if [[ ! "$(command -v gh)" ]]; then
 	sudo apt-add-repository https://cli.github.com/packages
 	sudo apt update && sudo apt install gh
 	echo "You must run \`gh auth login\`"
+elif [[ "$(command -v gh)" ]]; then
+	printf "gh already installed\n" # TODO: Call another function <24-02-21, melthsked> #
+	CheckInstallKite "$@"
+	return 0
 else
-	exit 1
+	printf "gh failed\n"
+	return 1
 fi
+}
 
-sudo npm i -g bash-language-server # see README.md for more
-# coc-ccls: main file ./lib/extension.js not found, you may need to build the project
-npm i coc-ccls # do in root directory of coc.nvim in nvim/autoload/plugged/coc.nvim
-# TODO ask to install Terminator and download Mstkj's config files from  GitHub.
-# TODO install zsh ohmyzsh termineter zshdb byobu etc
-git clone https://github.com/ohmyzsh/ohmyzsh.git
-
+function CheckInstallKite() {
 while true; do # Setup kite for all available editors
 	if [[ ! -e "$DIR"/nvim/pack/kite ]]; then
 		#touch kite-install.sh; echo "" >> kite-install.sh
@@ -197,7 +205,7 @@ done
 Main "$@" || [[ -z "${!$?}" ]] && printf "Failed, exiting..." ; exit 1
 exit 0
 
-# for citation management, I recommend Zotero/Mendeley
+# for citation management, I recommend Zotero
 # do you want to install Java jdk, runtime, gradle...?
 # if y; then sudo apt install java-common openjdk-14-jdk openjdk-14-jre gradle
 # use sudo apt install npm nodejs
@@ -221,3 +229,4 @@ exit 0
 # TODO Remember to implement rest of script functionality from notes in README.md
 # TODO: install xelatex pdf engine for pandoc LaTeX: install as texlive-xetex and wkhtmltopdf. <18-02-21, melthsked> #
 # TODO: Needs serious refactor <23-02-21, melthsked> #
+# TODO: Do you  want bootstrap 4 (npm i bootstrap@next) <25-02-21, melthsked> #

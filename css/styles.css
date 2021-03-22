@@ -21,25 +21,25 @@ ol.toc li { list-style-type: none; margin: 0; padding: 0; }
                      font-family: FantasqueSansMono;
                      font-style: normal;
                      font-weight: normal;
-                     src:url("FantasqueSansMono-Regular.ttf");
+                     src:url("../fonts/FantasqueSansMono-Regular.ttf");
                      }
                      @font-face {
                      font-family: FantasqueSansMono;
                      font-style: normal;
                      font-weight: bold;
-                     src:url("FantasqueSansMono-Bold.ttf");
+                     src:url("../fonts/FantasqueSansMono-Bold.ttf");
                      }
                      @font-face {
                      font-family: FantasqueSansMono;
                      font-style: italic;
                      font-weight: normal;
-                     src:url("FantasqueSansMono-Italic.ttf");
+                     src:url("../fonts/FantasqueSansMono-Italic.ttf");
                      }
                      @font-face {
                      font-family: FantasqueSansMono;
                      font-style: italic;
                      font-weight: bold;
-                     src:url("FantasqueSansMono-BoldItalic.ttf");
+                     src:url("../fonts/FantasqueSansMono-BoldItalic.ttf");
                      }
                      body { font-family: "FantasqueSansMono"; }
 

@@ -38,3 +38,4 @@ zotero: # calls zotero, must be currently running
 # Should be written at top of document in non-LaTeX syntax if using wkhtmltopdf
 # If using wkhtmltopdf, then place YAML header at top of document
 # whether your header uses latex or html syntax depends on what engine is preparing your documents
+# geometry is used only by LaTeX geometry package

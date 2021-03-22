@@ -1,0 +1,6 @@
+neovim
+django
+python-pylint
+jedi
+pymongo
+django-gravatar

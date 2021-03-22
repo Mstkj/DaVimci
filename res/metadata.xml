@@ -1,5 +1,5 @@
-<dc:title id="title">Document Title: Subtitle</dc:title>
-<meta refines="#title" property="title-type">Main</meta>
+<dc:title>title</dc:title>
+<dc:meta refines="title" property="title-type">Main</dc:meta>
 <dc:language>en-US</dc:language>
 <dc:creator id="metadata_id_creator">First and Last Name</dc:creator>
 <dc:publisher>Publisher Name</dc:publisher>

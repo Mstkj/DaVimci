@@ -1,6 +1,9 @@
+% DaVimci Projektet
+% Jorin Ryms (a.k.a. Mstkj)
+% 2021-03-17 14:25
 
-DaVimci Projektet
 
+Jorin's (a.k.a., Mstkj &amp; Melthsked) DaVimci or Vim (Neovim) Riced bootstrapping program/script
 Use LaTeX for academic documents and HTML for non-academic documents
 Use as IDE for programming both small and large projects
 or for writing emails, books, legal documents, academic/scientific papers, etc
@@ -22,7 +25,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 ## As a word processor/manuscript writer
 
-The biggest Vim features you should have at your disposal are: (1) multi-lingual autocompletion, (2) spellcheck, (3) offline thesaurus, (4) multi-lingual dictionaries (5) minimal formatting, (6) full customization, (7) document conversion, (8) built-in terminal, (9) virtual tutor, (10) debugger, (11) compiler, (12) Git wrapper, (13) syntax highlighting, (14) &amp; sidebar file navigation
+The biggest Vim features you should have at your disposal are: (1) multi-lingual autocompletion, (2) spellcheck, (3) offline thesaurus, (4) multi-lingual dictionaries (5) formatting, (6) full customization, (7) document conversion, (8) built-in terminal, (9) virtual tutor, (10) debugger, (11) compiler, (12) Git wrapper, (13) syntax highlighting, (14) &amp; sidebar file navigation
 
 You should be able to use Vim as a full-stack development environment for Python, Java, C/C++, Shellscript, or Go.
 Vim has a few modes with which you will become familiar as you use it:
@@ -107,6 +110,7 @@ vim-lexical
 `Shift+[` and `Shift+]` navigate up and down the document by block
 `Shift+K` opens the definition of anything highlighted by the cursor
 For anything undocumented by your virtual tutor, you can type `:help` followed by the name of any vim plugin or function.
+For errors, you can do, for example, `:h E319`
 To enable the compose key for UNIX systems, enter `sudo dpkg-reconfigure keyboard-configuration` and `KBDOPTIONS=Compose:ralt` in `/etc/default/keyboard` to enable typing in multiple languages
 Type `:PlugInstall` to install your plugins
 change your keyboard autorepeat rate with `sudo kbdrate`
@@ -129,5 +133,7 @@ learn to add custom templates to pandoc
 
 If using wkhtmltopdf, pandoc will rasterize PDFs if using TTF.
 When using HTML5 markdown, use HTML5 tags such as `<title>$title$</title>` if using pandoc template. Write manually if without template.
+
+Detail the plugins used for each type of file opened
 
 </template>
